@@ -1,0 +1,612 @@
+{
+  "verified_date": "2026-10-09",
+  "sources": [
+    {
+      "repo": "dietrichgebert/ponytail",
+      "ref": "main",
+      "commit": "9cc65d03aa2da1db7121b912d03596409ee340b8",
+      "skills": [
+        ".openclaw/skills/ponytail-audit/SKILL.md",
+        ".openclaw/skills/ponytail-debt/SKILL.md",
+        ".openclaw/skills/ponytail-gain/SKILL.md",
+        ".openclaw/skills/ponytail-help/SKILL.md",
+        ".openclaw/skills/ponytail-review/SKILL.md",
+        ".openclaw/skills/ponytail/SKILL.md",
+        "skills/ponytail-audit/SKILL.md",
+        "skills/ponytail-debt/SKILL.md",
+        "skills/ponytail-gain/SKILL.md",
+        "skills/ponytail-help/SKILL.md",
+        "skills/ponytail-review/SKILL.md",
+        "skills/ponytail/SKILL.md"
+      ],
+      "top_files": [
+        "README.md",
+        "package.json"
+      ],
+      "installed": [
+        {
+          "name": "ponytail-audit",
+          "path": "skills/ponytail-audit",
+          "status": "already-present",
+          "sha256": "2b3223a02c386d1263e1b08343cb8eb3a53e444cdafb1d79e26c8ec2a8fcad28"
+        },
+        {
+          "name": "ponytail-debt",
+          "path": "skills/ponytail-debt",
+          "status": "already-present",
+          "sha256": "63168f0e1475affb1211bc004261aa51a037f79e484571aae484bf27fe4d17c2"
+        },
+        {
+          "name": "ponytail-gain",
+          "path": "skills/ponytail-gain",
+          "status": "already-present",
+          "sha256": "60e05eaf65e8e404c8975a944eda9d3ed4ae3345478b3550b0e74570982c187e"
+        },
+        {
+          "name": "ponytail-help",
+          "path": "skills/ponytail-help",
+          "status": "already-present",
+          "sha256": "2927276bc9c10221ce8bcf80adb798db130cd70eb33a95db91ab3a0d105f5109"
+        },
+        {
+          "name": "ponytail-review",
+          "path": "skills/ponytail-review",
+          "status": "already-present",
+          "sha256": "33fe4ebe22a460924e5d4a261e223df22e409cc94ab76182bee9fb91a3ef022e"
+        },
+        {
+          "name": "ponytail",
+          "path": "skills/ponytail",
+          "status": "already-present",
+          "sha256": "ba68ff26239c3c3b05b2a9a47ee0d9a6b93a69639a2555ec87a5d44bffaf2f0c"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "ItsssssJack/SlopMonster",
+      "ref": "main",
+      "commit": "3fc9787d9337b57c599a80afbefbbb3be5a8eb0b",
+      "skills": [
+        "SKILL.md"
+      ],
+      "top_files": [
+        "README.md"
+      ],
+      "installed": [
+        {
+          "name": "slopmonster",
+          "path": ".",
+          "status": "already-present",
+          "sha256": "c382c3188671ea2c2d533194e068fe03372f77d8d35f8015ffee69108fe83c3f"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "dickwu/apple-design-skill",
+      "ref": "main",
+      "commit": "904b0eedc7cc778152f545506075d5bb5219ce77",
+      "skills": [
+        "SKILL.md"
+      ],
+      "top_files": [
+        "README.md"
+      ],
+      "installed": [
+        {
+          "name": "apple-design",
+          "path": ".",
+          "status": "already-present",
+          "sha256": "ec7b6e5ebf3477288ce547a1245e5b5234011ac6fa6dd25c2abdad0699dbd30b"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "VoltAgent/awesome-design-md",
+      "ref": "main",
+      "commit": "13be5c05c63be24b57581162364167028020f043",
+      "skills": [],
+      "top_files": [
+        "README.md"
+      ],
+      "installed": [],
+      "status": "reference-library"
+    },
+    {
+      "repo": "leonxlnx/taste-skill",
+      "ref": "main",
+      "commit": "18dfc928b135629e0eddfdd445a06400d04ed439",
+      "skills": [
+        "skills/brandkit/SKILL.md",
+        "skills/brutalist-skill/SKILL.md",
+        "skills/gpt-tasteskill/SKILL.md",
+        "skills/image-to-code-skill/SKILL.md",
+        "skills/imagegen-frontend-mobile/SKILL.md",
+        "skills/imagegen-frontend-web/SKILL.md",
+        "skills/minimalist-skill/SKILL.md",
+        "skills/output-skill/SKILL.md",
+        "skills/redesign-skill/SKILL.md",
+        "skills/soft-skill/SKILL.md",
+        "skills/stitch-skill/SKILL.md",
+        "skills/taste-skill-v1/SKILL.md",
+        "skills/taste-skill/SKILL.md"
+      ],
+      "top_files": [
+        "README.md"
+      ],
+      "installed": [
+        {
+          "name": "brandkit",
+          "path": "skills/brandkit",
+          "status": "already-present",
+          "sha256": "b0c4837e1bd140ca816ae54948754ddd2ac1e2a4d3619363777a80caf00b2ede"
+        },
+        {
+          "name": "brutalist-skill",
+          "path": "skills/brutalist-skill",
+          "status": "already-present",
+          "sha256": "fffbaac8597f07679e9d87145533567658aedba3b5eca6f16a7075a333048caa"
+        },
+        {
+          "name": "gpt-tasteskill",
+          "path": "skills/gpt-tasteskill",
+          "status": "already-present",
+          "sha256": "2e64c269953f2656c21bf5a0fa6b4568e82fe0c72b36e8f84758e090349966a5"
+        },
+        {
+          "name": "image-to-code-skill",
+          "path": "skills/image-to-code-skill",
+          "status": "already-present",
+          "sha256": "4c060a8064a8b13380bc2ef3d6e6a1d0b1e316aa093cd9807d0ce9e4eeb037fa"
+        },
+        {
+          "name": "imagegen-frontend-mobile",
+          "path": "skills/imagegen-frontend-mobile",
+          "status": "already-present",
+          "sha256": "8a33389979f3074fa0926678e266ad2eb9234624472254469fc1ad916b9caa24"
+        },
+        {
+          "name": "imagegen-frontend-web",
+          "path": "skills/imagegen-frontend-web",
+          "status": "already-present",
+          "sha256": "6b5c2256522fdba1e3313eafa3d743b960a7b13ec029d3e6586e04b23327c1f8"
+        },
+        {
+          "name": "minimalist-skill",
+          "path": "skills/minimalist-skill",
+          "status": "already-present",
+          "sha256": "36bc7328f085405f43b476938e62460fa573bf7e984e949e072bcf014831a44c"
+        },
+        {
+          "name": "output-skill",
+          "path": "skills/output-skill",
+          "status": "already-present",
+          "sha256": "e5bf48b1ae561511439cf71672209a10a88cee0968cc925909ff861dfa0a96a7"
+        },
+        {
+          "name": "redesign-skill",
+          "path": "skills/redesign-skill",
+          "status": "already-present",
+          "sha256": "98ad3e5b051bfb71b2795f7e8a6aa0d32b51ee095606c098a4b2822ac07926c9"
+        },
+        {
+          "name": "soft-skill",
+          "path": "skills/soft-skill",
+          "status": "already-present",
+          "sha256": "e1e32f5e2d420872c6c7332b53d5ff7721946766b78c4822b424c2d512c8fdbc"
+        },
+        {
+          "name": "stitch-skill",
+          "path": "skills/stitch-skill",
+          "status": "already-present",
+          "sha256": "46bdb08fee2dded38b6ba0a051230a502d6ac6e4044afd47592cb40c256028b5"
+        },
+        {
+          "name": "taste-skill-v1",
+          "path": "skills/taste-skill-v1",
+          "status": "already-present",
+          "sha256": "033d45af1ed23832730642f95f40ab49db7fb5222848489a6c5656144bfc6dae"
+        },
+        {
+          "name": "taste-skill",
+          "path": "skills/taste-skill",
+          "status": "already-present",
+          "sha256": "aa194351b246b8b4799099d4ed7b033d29eab6e6e3d58d8d2172978be7b3ec89"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "vercel-labs/agent-skills",
+      "ref": "main",
+      "commit": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "skills": [
+        "skills/composition-patterns/SKILL.md",
+        "skills/deploy-to-vercel/SKILL.md",
+        "skills/react-best-practices/SKILL.md",
+        "skills/react-native-skills/SKILL.md",
+        "skills/react-view-transitions/SKILL.md",
+        "skills/vercel-cli-with-tokens/SKILL.md",
+        "skills/vercel-optimize/SKILL.md",
+        "skills/web-design-guidelines/SKILL.md",
+        "skills/writing-guidelines/SKILL.md"
+      ],
+      "top_files": [
+        "README.md",
+        "package.json"
+      ],
+      "installed": [
+        {
+          "name": "web-design-guidelines",
+          "path": "skills/web-design-guidelines",
+          "status": "already-present",
+          "sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "microsoft/playwright-cli",
+      "ref": "main",
+      "commit": "b85c7a736bb473bf55b584e54a09ffa698d6d871",
+      "skills": [
+        ".claude/skills/dev/SKILL.md",
+        "skills/playwright-cli/SKILL.md"
+      ],
+      "top_files": [
+        "README.md",
+        "package.json"
+      ],
+      "installed": [
+        {
+          "name": "playwright-cli",
+          "path": "skills/playwright-cli",
+          "status": "already-present",
+          "sha256": "9bba755285a4c9ad72a4a41b9c7baef6fb516d329c0b44ed0573715f4479b906"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "Graphify-Labs/graphify",
+      "ref": "v8",
+      "commit": "5b74d7d74911cf435c8f1636b6f96ea202cc6246",
+      "skills": [
+        "graphify/skill.md"
+      ],
+      "top_files": [
+        "README.md",
+        "pyproject.toml"
+      ],
+      "installed": [
+        {
+          "name": "graphify",
+          "path": "graphify",
+          "status": "already-present",
+          "sha256": "44b54637560fadb98fd8dc0769cf3979dbdeeaf4c75971a81ea620f243e16cae"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "addyosmani/agent-skills",
+      "ref": "main",
+      "commit": "1401c8b8030e023baeebb31781a6653fe8e93026",
+      "skills": [
+        "skills/api-and-interface-design/SKILL.md",
+        "skills/browser-testing-with-devtools/SKILL.md",
+        "skills/ci-cd-and-automation/SKILL.md",
+        "skills/code-review-and-quality/SKILL.md",
+        "skills/code-simplification/SKILL.md",
+        "skills/constraint-driven-development/SKILL.md",
+        "skills/context-engineering/SKILL.md",
+        "skills/debugging-and-error-recovery/SKILL.md",
+        "skills/deprecation-and-migration/SKILL.md",
+        "skills/documentation-and-adrs/SKILL.md",
+        "skills/doubt-driven-development/SKILL.md",
+        "skills/frontend-ui-engineering/SKILL.md",
+        "skills/git-workflow-and-versioning/SKILL.md",
+        "skills/idea-refine/SKILL.md",
+        "skills/incremental-implementation/SKILL.md",
+        "skills/interview-me/SKILL.md",
+        "skills/observability-and-instrumentation/SKILL.md",
+        "skills/performance-optimization/SKILL.md",
+        "skills/planning-and-task-breakdown/SKILL.md",
+        "skills/security-and-hardening/SKILL.md",
+        "skills/shipping-and-launch/SKILL.md",
+        "skills/source-driven-development/SKILL.md",
+        "skills/spec-driven-development/SKILL.md",
+        "skills/test-driven-development/SKILL.md",
+        "skills/using-agent-skills/SKILL.md"
+      ],
+      "top_files": [
+        "README.md"
+      ],
+      "installed": [
+        {
+          "name": "api-and-interface-design",
+          "path": "skills/api-and-interface-design",
+          "status": "already-present",
+          "sha256": "e83d34f52ff12dd8a7c5134cd7e8140ea4541ec65e204f8a1e4cd366e30c4192"
+        },
+        {
+          "name": "browser-testing-with-devtools",
+          "path": "skills/browser-testing-with-devtools",
+          "status": "already-present",
+          "sha256": "4e3aacd6a380cd25bc6c2d67fdd1c926a9b22535b8a62109ecd33cefd909e3d9"
+        },
+        {
+          "name": "ci-cd-and-automation",
+          "path": "skills/ci-cd-and-automation",
+          "status": "already-present",
+          "sha256": "a6ed8ed56456b01ff8314c44eefc69897d9905ae4e06bb2b7036286efb79b5f0"
+        },
+        {
+          "name": "code-review-and-quality",
+          "path": "skills/code-review-and-quality",
+          "status": "already-present",
+          "sha256": "2db1e850379f255fd3091ef278cde24cd6c7d2ba23e360cc52ea522c40d4396e"
+        },
+        {
+          "name": "code-simplification",
+          "path": "skills/code-simplification",
+          "status": "already-present",
+          "sha256": "f0c5ed754057eb0c1e027e2587f59de816651feb5e837242296c43ea21cf621d"
+        },
+        {
+          "name": "constraint-driven-development",
+          "path": "skills/constraint-driven-development",
+          "status": "already-present",
+          "sha256": "06479d4305f286d23cfb99f5dc85695896785269664e1f6a8d800e3b71e70c10"
+        },
+        {
+          "name": "context-engineering",
+          "path": "skills/context-engineering",
+          "status": "already-present",
+          "sha256": "8b736cb9e55b82b265ab6ff78349c0e826e8a6df550deddf665b7fb3ff858b63"
+        },
+        {
+          "name": "debugging-and-error-recovery",
+          "path": "skills/debugging-and-error-recovery",
+          "status": "already-present",
+          "sha256": "21f3960f5d7ae2cc95c40896545004dbbcbbd752ea65fc2d53962554d4174220"
+        },
+        {
+          "name": "deprecation-and-migration",
+          "path": "skills/deprecation-and-migration",
+          "status": "already-present",
+          "sha256": "6a624f942e09c69863a4219b9bd5d56975026b67b0c70bc83385ffd2120b6142"
+        },
+        {
+          "name": "documentation-and-adrs",
+          "path": "skills/documentation-and-adrs",
+          "status": "already-present",
+          "sha256": "359b22460045583b0233ec3f80223459c4096b0fa513f5c29ade9c3985207d65"
+        },
+        {
+          "name": "doubt-driven-development",
+          "path": "skills/doubt-driven-development",
+          "status": "already-present",
+          "sha256": "6fa1fcd8420c28daf7e53c5b08b0f20b907911efd2a6d9bce0b9740da20a4008"
+        },
+        {
+          "name": "frontend-ui-engineering",
+          "path": "skills/frontend-ui-engineering",
+          "status": "already-present",
+          "sha256": "549044e9bd8d7fe993ce8e5c0d2b0f5465650676dc15805329973f936179eb1e"
+        },
+        {
+          "name": "git-workflow-and-versioning",
+          "path": "skills/git-workflow-and-versioning",
+          "status": "already-present",
+          "sha256": "b7465d187935c52546d39fdc7bd6ac36d94eda25a9500ef8c18b767d2eb116ea"
+        },
+        {
+          "name": "idea-refine",
+          "path": "skills/idea-refine",
+          "status": "already-present",
+          "sha256": "79e773058963adc7646b0115b4f8a4afc974c5ff95843e4ef1cafff3cb51899e"
+        },
+        {
+          "name": "incremental-implementation",
+          "path": "skills/incremental-implementation",
+          "status": "already-present",
+          "sha256": "df66536610071727feae1ca95f3c391c248ad828041750ccd3699cce763aa00b"
+        },
+        {
+          "name": "interview-me",
+          "path": "skills/interview-me",
+          "status": "already-present",
+          "sha256": "ace4b675999bb504593d572e0f73f3d7e803ad6fddf318445598c82c11939db2"
+        },
+        {
+          "name": "observability-and-instrumentation",
+          "path": "skills/observability-and-instrumentation",
+          "status": "already-present",
+          "sha256": "e7fcb0820306d46268de9594d676ad98e35040858926c412b7000faa52a61f87"
+        },
+        {
+          "name": "performance-optimization",
+          "path": "skills/performance-optimization",
+          "status": "already-present",
+          "sha256": "665a83a7218d6aebd02ca329a7b2422cf28f7c55cb56f870c05e12047770245c"
+        },
+        {
+          "name": "planning-and-task-breakdown",
+          "path": "skills/planning-and-task-breakdown",
+          "status": "already-present",
+          "sha256": "ed0f90cc5951ddd4bcab7f871f64efec93a49af9279ef93bc470da77ad8da3f7"
+        },
+        {
+          "name": "security-and-hardening",
+          "path": "skills/security-and-hardening",
+          "status": "already-present",
+          "sha256": "2e3fc60eed5aba97fe416f3f3c9317fdb014a682925ec70a733c3ff99e4b9858"
+        },
+        {
+          "name": "shipping-and-launch",
+          "path": "skills/shipping-and-launch",
+          "status": "already-present",
+          "sha256": "1055d25dfe6cfeb6ae31eba3e2328fd0e7c66b285f0e44c40f67c77a59813281"
+        },
+        {
+          "name": "source-driven-development",
+          "path": "skills/source-driven-development",
+          "status": "already-present",
+          "sha256": "c59faf851377f0eeda45306398d16eb96d77ab1c2fd3e1a7fb58e9a0af33c1e9"
+        },
+        {
+          "name": "spec-driven-development",
+          "path": "skills/spec-driven-development",
+          "status": "already-present",
+          "sha256": "c4b97ce3d7f24be0e67fd612c7595f65504872e3a9f8d338d098b2363fdb66ef"
+        },
+        {
+          "name": "test-driven-development",
+          "path": "skills/test-driven-development",
+          "status": "already-present",
+          "sha256": "7c0c6ac057c19d7f8be65d9f49c3a638703b868f4625c78b70da5439d5d74fca"
+        },
+        {
+          "name": "using-agent-skills",
+          "path": "skills/using-agent-skills",
+          "status": "already-present",
+          "sha256": "30787ef2c77bf1a4729fffed0f6523ba6fcbe81bdc436b36371b78c21394d3c3"
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "worldflowai/everything-claude-code",
+      "ref": "main",
+      "commit": "432485ba6b92c14fb357276a98957f348bcff9ee",
+      "skills": [
+        "skills/backend-patterns/SKILL.md",
+        "skills/clickhouse-io/SKILL.md",
+        "skills/coding-standards/SKILL.md",
+        "skills/continuous-learning/SKILL.md",
+        "skills/eval-harness/SKILL.md",
+        "skills/frontend-patterns/SKILL.md",
+        "skills/project-guidelines-example/SKILL.md",
+        "skills/security-review/SKILL.md",
+        "skills/strategic-compact/SKILL.md",
+        "skills/tdd-workflow/SKILL.md",
+        "skills/verification-loop/SKILL.md"
+      ],
+      "top_files": [
+        "README.md"
+      ],
+      "installed": [
+        {
+          "name": "backend-patterns",
+          "path": "skills/backend-patterns",
+          "status": "already-present",
+          "sha256": "229144897bded5b0ac5d39e9f3d34394234cbe6d92473a69df1a54bf211cdd5b"
+        },
+        {
+          "name": "clickhouse-io",
+          "path": "skills/clickhouse-io",
+          "status": "already-present",
+          "sha256": "8e0d4fd171e1ec995d642b84aeaf5843c8d6976c8d12e0a572fb807d9f351166"
+        },
+        {
+          "name": "coding-standards",
+          "path": "skills/coding-standards",
+          "status": "already-present",
+          "sha256": "1827f282caa07d38ec64ce7bf2bbc4fc1a703080c9346e17aea731a08aafac24"
+        },
+        {
+          "name": "continuous-learning",
+          "path": "skills/continuous-learning",
+          "status": "already-present",
+          "sha256": "bcf0fe95b3b7b67c1bd59ec75cfd7fa40a9d698d0030ac14f3a45a5a98f1483d"
+        },
+        {
+          "name": "eval-harness",
+          "path": "skills/eval-harness",
+          "status": "already-present",
+          "sha256": "1b9cdcae392d8801637e8268b8e6147570db71434aae70024fbd6f98cf94de3e",
+          "upstream_sha256": "24330376cea79bb02cede9cef9b0132ac4af69f4db231e975c07ff4688e5edf9",
+          "adaptation": "Added required Codex YAML name/description metadata. Instruction body preserved."
+        },
+        {
+          "name": "frontend-patterns",
+          "path": "skills/frontend-patterns",
+          "status": "already-present",
+          "sha256": "193bfa61755991340c89e033b860fe7e84dd47ab013c844c09069e6e3543f21a"
+        },
+        {
+          "name": "project-guidelines-example",
+          "path": "skills/project-guidelines-example",
+          "status": "already-present",
+          "sha256": "fe78e47a4008e1f341b1ddf3ab029c9304e3108f6187c9f30fc8fde9a1d74815",
+          "upstream_sha256": "d8156f2df70d407dcfa433d279c9160430ef00c1bfb015ae2cf495f7c1392d8a",
+          "adaptation": "Added required Codex YAML name/description metadata. Instruction body preserved."
+        },
+        {
+          "name": "security-review",
+          "path": "skills/security-review",
+          "status": "already-present",
+          "sha256": "b4fbed82c5a1741432f0da689fd96e9fa0c40011d9450ca61065dad772758494"
+        },
+        {
+          "name": "strategic-compact",
+          "path": "skills/strategic-compact",
+          "status": "already-present",
+          "sha256": "1258d7208d76af5379be4ca02d2378064a8dea689396c7599bbcdccbfb7edf03"
+        },
+        {
+          "name": "tdd-workflow",
+          "path": "skills/tdd-workflow",
+          "status": "already-present",
+          "sha256": "2b5f62f68752e7c21dd217c9274b23290a5b8a6d40454125a27560a905e3da92"
+        },
+        {
+          "name": "verification-loop",
+          "path": "skills/verification-loop",
+          "status": "already-present",
+          "sha256": "8dbe697b61f2fb4f675f0afa7abb396ab93b4f6588d7ba7968b70c536e369574",
+          "upstream_sha256": "850ae034c334a3c88428921043d6a2b3441284ee85b4d749fa19c62194190eaa",
+          "adaptation": "Added required Codex YAML name/description metadata. Instruction body preserved."
+        }
+      ],
+      "status": "installed"
+    },
+    {
+      "repo": "ayghri/i-have-adhd",
+      "ref": "main",
+      "commit": "723af7d9afaf43eb871dbcce6129e2bf80de90d5",
+      "skills": [
+        "skills/i-have-adhd/SKILL.md"
+      ],
+      "installed": [
+        {
+          "name": "i-have-adhd",
+          "path": "skills/i-have-adhd",
+          "status": "installed",
+          "sha256": "88955c019bbb1419ff4b49dbb1f80a867467de6233d7865af2e06a7d7b76c7d3"
+        }
+      ]
+    },
+    {
+      "repo": "anthropics/skills",
+      "ref": "main",
+      "commit": "9d630808e4add0a7146de4af9384155d5dee350a",
+      "skills": [
+        "skills/frontend-design"
+      ],
+      "top_files": [],
+      "installed": [
+        {
+          "name": "frontend-design",
+          "path": "skills/frontend-design",
+          "status": "installed",
+          "sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3",
+          "hash_scope": "SKILL.md"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+.git/
+.agents/
+node_modules/
+dist/
+build/
+coverage/
+.venv/
+.env*
+.ENV*
+*.pem
+*.key
+.playwright-cli/
+.playwright/
+test-results/
+private-imports/
+private-backups/
+graphify-out/

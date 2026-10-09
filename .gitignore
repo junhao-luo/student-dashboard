@@ -1,0 +1,32 @@
+# Local credentials; only a placeholder template may be committed.
+.env*
+.ENV*
+!.env.example
+*.pem
+*.key
+
+# Build output and local tooling.
+node_modules/
+dist/
+build/
+coverage/
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+
+# Browser sessions, recordings, and private test artifacts.
+.playwright-cli/
+.playwright/
+playwright-report/
+test-results/
+auth-state*.json
+
+# Generated code graphs can reveal repository details.
+graphify-out/
+.graphify_cache/
+
+# Personal imports and local backups must not be published.
+private-imports/
+private-backups/
