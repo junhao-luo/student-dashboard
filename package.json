@@ -12,7 +12,8 @@
     "lint:security": "node scripts/security-check.mjs",
     "check:security-history": "node scripts/security-check.mjs --history",
     "verify": "npm run lint:security && npm test && npm run test:server && npm run check:server && npm audit --audit-level=high",
-    "build:release": "npm run verify && node scripts/release-build.mjs"
+    "build:release": "npm run verify && node scripts/release-build.mjs",
+    "build:hosting": "npm run verify && node scripts/hosting-build.mjs && npm run lint:security"
   },
   "dependencies": {
     "@blocknote/core": "^0.55.0",

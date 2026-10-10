@@ -1,5 +1,7 @@
 # Memory
 
+Security pipeline follow-up: cde8b36 passed remote GitHub security CI (38028715110, 33s) and protected Vercel Preview (FTeBDREf9pJpW8JYho4eSR7SuB8r, 27s). Updated sign-in renders. Removed Node-20 action warnings by resolving official v6 commits; fixed Ubuntu runner version. Hosting wrapper automatically couples with a scoped deploy key, rejects Production without one and preserves protected Preview's explicit development configuration pending key setup. Missing-key negative checks and full local hosting command pass. Expanded history credential scan to all tracked text paths: nine commits, zero findings. Existing production release gaps remain in docs/Security-review.md.
+
 ## Security audit and deployment gates, 2026-10-10
 
 User requested all security checks and simultaneous-build/version recommendations. Applied security-review, security-and-hardening, CI/CD-and-automation, Ponytail and verification-loop. Reviewed every S01–S24 in docs/Security-review.md with explicit gaps. Owner confirmed administrator 2FA/recovery on all four providers (attestation only). Official Vercel docs confirm Hobby has one concurrent build and Skew Protection is Pro/Enterprise; no paid upgrade enabled. Prepared guarded coupled Convex/frontend release command, requiring an explicit hosting deploy key; it is not active automatically yet.

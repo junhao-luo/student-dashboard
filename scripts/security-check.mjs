@@ -8,6 +8,13 @@ const failures=new Set();
 const checked=new Set();
 const endpoints=[];
 const secretPatterns=[/\b(?:sk_live_|sk_test_)[A-Za-z0-9]{20,}/,/\bgh[pousr]_[A-Za-z0-9]{30,}/,/\bgithub_pat_[A-Za-z0-9_]{40,}/,/\bAKIA[A-Z0-9]{16}\b/,/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/];
+const gitPattern='(sk_live_|sk_test_)[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|AKIA[A-Z0-9]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----';
+function scanGit(revision){
+ try{
+  const matches=execFileSync('git',['grep','-I','-l','-E','-e',gitPattern,...(revision?[revision]:[])],{encoding:'utf8'});
+  for(const file of matches.trim().split('\n').filter(Boolean))failures.add(`Git credential pattern: ${file}`);
+ }catch(error){if(error.status!==1)throw error;}
+}
 const tracked=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
 const inScope=file=>/^(src\/|convex\/|scripts\/|\.github\/|package(?:-lock)?\.json$|vercel\.json$|vite\.config\.ts$|index\.html$|\.env\.example$)/.test(file);
 function inspect(file,content,syntax=false){
@@ -48,6 +55,7 @@ for(const file of tracked){
  if(/(^|\/)\.env(?:\.|$)/i.test(file)&&file!=='.env.example')failures.add(`Tracked environment file: ${file}`);
  if(inScope(file)&&fs.existsSync(file))inspect(file,fs.readFileSync(file,'utf8'),!file.endsWith('.test.ts')&&!file.includes('_generated/'));
 }
+scanGit();
 // Include newly created application/check files before their first commit.
 for(const root of ['src','convex','scripts','dist']){
  if(!fs.existsSync(root))continue;
@@ -59,16 +67,12 @@ for(const root of ['src','convex','scripts','dist']){
 }
 if(process.argv.includes('--history')){
  const commits=execFileSync('git',['rev-list','--all'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
- const pattern='(sk_live_|sk_test_)[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|AKIA[A-Z0-9]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----';
  for(const commit of commits){
-  try{
-   const matches=execFileSync('git',['grep','-I','-l','-E','-e',pattern,commit,'--','src/','convex/','scripts/','.github/','package.json','package-lock.json','vercel.json','vite.config.ts','index.html','.env.example'],{encoding:'utf8'});
-   for(const file of matches.trim().split('\n').filter(Boolean))failures.add(`History credential pattern: ${file}`);
-  }catch(error){if(error.status!==1)throw error;}
+  scanGit(commit);
   const names=execFileSync('git',['ls-tree','-r','--name-only',commit],{encoding:'utf8'}).split('\n');
   for(const file of names)if(/(^|\/)\.env(?:\.|$)/i.test(file)&&file!=='.env.example')failures.add(`Historical environment file: ${commit.slice(0,7)}:${file}`);
  }
- console.log(`History scanned: ${commits.length} reachable commits (application/configuration paths).`);
+ console.log(`History scanned: ${commits.length} reachable commits (all tracked text paths).`);
 }
 console.log(`Security static checks: ${checked.size} files, ${failures.size} findings; ${new Set(endpoints).size} public action declarations reviewed. Pattern scanning and syntax checks do not prove runtime security.`);
 for(const finding of failures)console.error(finding);
