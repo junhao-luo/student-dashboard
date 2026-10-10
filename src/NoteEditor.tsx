@@ -5,12 +5,13 @@ import {en,zhTW} from '@blocknote/core/locales';
 import type {PartialBlock} from '@blocknote/core';
 import '@blocknote/mantine/style.css';
 import {UploadArea} from './Interface';
-import {getFile,putFile,removeFile} from './storage';
+import {useWorkspaceStorage} from './LocalWorkspace';
 import {downloadBlob} from './export';
 import {cleanNoteContent,validateNoteFile} from './note-content';
 import type {Note} from './domain';
 
 export function NoteEditor({note,onChange,onDelete,zh,dark}:{note:Note;onChange:(patch:Partial<Note>)=>void;onDelete:()=>Promise<void>;zh:boolean;dark:boolean}){
+  const {getFile,putFile,removeFile}=useWorkspaceStorage();
   const t=(enText:string,cn:string)=>zh?cn:enText;
   const [ready,setReady]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false);
   const latest=useRef(note),change=useRef(onChange),alive=useRef(true),uploading=useRef(false),urls=useRef(new Map<string,string>());

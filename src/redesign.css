@@ -602,7 +602,7 @@ dialog::backdrop {
     overflow: visible;
   }
   nav button {
-    flex: 1 1 42%;
+    flex: 0 0 auto;
     justify-content: flex-start;
   }
   .brand strong {

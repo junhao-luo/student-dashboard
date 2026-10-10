@@ -17,7 +17,7 @@ export function Dropdown({label,icon,active=false,children}:{label:string;icon?:
   </div>;
 }
 
-export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({search,...props}:React.SelectHTMLAttributes<HTMLSelectElement>&{search?:{label:string;placeholder:string;empty:string;alwaysVisible:string[]}}) {
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const native = useRef<HTMLSelectElement>(null);
@@ -25,6 +25,9 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
   const [value, setValue] = useState(String(props.value ?? props.defaultValue ?? ''));
   const [options, setOptions] = useState<{value:string; text:string; disabled:boolean}[]>([]);
   const [label, setLabel] = useState('');
+  const [query,setQuery]=useState('');
+  const searchInput=useRef<HTMLInputElement>(null);
+  useEffect(()=>{if(open&&search){setQuery('');searchInput.current?.focus();}},[open]);
   useEffect(() => {
     const items = Array.from(native.current?.options ?? []).map(o => ({value:o.value,text:o.text,disabled:o.disabled}));
     setOptions(items);
@@ -37,6 +40,8 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
     return () => document.removeEventListener('pointerdown',close);
   }, []);
   const current = String(props.value ?? value);
+  const matches=options.filter(o=>!search||search.alwaysVisible.includes(o.value)||o.text.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  function dismiss(){setOpen(false);root.current?.querySelector('button')?.focus();}
   function choose(next:string) {
     setValue(next);
     if (native.current) {
@@ -46,14 +51,23 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
     setOpen(false);
     root.current?.querySelector('button')?.focus();
   }
-  return <div className="custom-select" ref={root}>
+  // Mobile Safari can blur the search input without focusing the tapped option.
+  return <div className="custom-select" ref={root} onBlur={e=>{if(e.relatedTarget&&!e.currentTarget.contains(e.relatedTarget as Node))setOpen(false);}}>
     <select {...props} ref={native} value={current || undefined} defaultValue={undefined} onChange={e=>{setValue(e.target.value);props.onChange?.(e);}} className="select-backing" tabIndex={-1} aria-hidden="true" />
-    <button type="button" role="combobox" className="select-trigger" disabled={props.disabled} aria-label={props['aria-label'] ?? label} aria-haspopup="listbox" aria-expanded={open} aria-controls={id} onClick={e=>{e.preventDefault();setOpen(!open);}} onKeyDown={e=>{
+    <button type="button" role="combobox" className="select-trigger" disabled={props.disabled} aria-label={props['aria-label'] ?? label} aria-required={props.required||props['aria-required']} aria-haspopup="listbox" aria-expanded={open} aria-controls={id} onClick={e=>{e.preventDefault();setOpen(!open);}} onKeyDown={e=>{
       if(e.key==='Escape'&&open){e.preventDefault();e.stopPropagation();setOpen(false);}
       if(e.key==='Tab')setOpen(false);
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();setOpen(true);setTimeout(()=>root.current?.querySelector<HTMLButtonElement>('[role=option][aria-selected=true]')?.focus(),0);}
     }}>{options.find(o=>o.value===current)?.text ?? options[0]?.text}<ChevronDown size={16}/></button>
-    {open && <div id={id} role="listbox" className="select-menu" aria-label={props['aria-label'] ?? 'Options'}>{options.map((o,i)=><button key={o.value} type="button" role="option" disabled={o.disabled} aria-selected={o.value===current} onClick={e=>{e.preventDefault();choose(o.value);}} onKeyDown={e=>{
+    {open && <div className={`select-menu ${search?'searchable-menu':''}`}>
+      {search&&<div className="select-search"><input ref={searchInput} type="search" aria-label={search.label} aria-controls={id} value={query} maxLength={120} placeholder={search.placeholder} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{
+        if(e.nativeEvent.isComposing)return;
+        if(e.key==='Escape'){e.preventDefault();e.stopPropagation();dismiss();}
+        if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const buttons=root.current?.querySelectorAll<HTMLButtonElement>('[role=option]:not(:disabled)');buttons?.[e.key==='ArrowDown'?0:buttons.length-1]?.focus();}
+        if(e.key==='Enter'){e.preventDefault();const first=matches.find(o=>!o.disabled);if(first)choose(first.value);}
+      }}/></div>}
+      {search&&!matches.some(o=>!o.disabled&&!search.alwaysVisible.includes(o.value))&&<p className="select-empty" role="status">{search.empty}</p>}
+      <div id={id} role="listbox" className="select-options" aria-label={props['aria-label'] ?? 'Options'}>{matches.map(o=><button key={o.value} type="button" role="option" disabled={o.disabled} aria-selected={o.value===current} onClick={e=>{e.preventDefault();choose(o.value);}} onKeyDown={e=>{
       const buttons=Array.from(root.current?.querySelectorAll<HTMLButtonElement>('[role=option]:not(:disabled)')??[]);
       const index=buttons.indexOf(e.currentTarget);
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();buttons[(index+(e.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length]?.focus();}
@@ -61,7 +75,7 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
       if(e.key==='Escape'){e.preventDefault();setOpen(false);root.current?.querySelector('button')?.focus();}
       if(e.key==='Tab')setOpen(false);
       if(e.key.length===1&&e.key!==' '){buttons.find(b=>b.textContent?.toLowerCase().startsWith(e.key.toLowerCase()))?.focus();}
-    }}>{o.text}</button>)}</div>}
+    }}>{o.text}</button>)}</div></div>}
   </div>;
 }
 

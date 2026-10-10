@@ -16,6 +16,8 @@ import {
   GraduationCap,
   ArrowUpRight,
   Trash2,
+  Menu,
+  X,
 } from "lucide-react";
 import {
   validateCourse,
@@ -34,18 +36,48 @@ import "@fontsource-variable/geist";
 import "./redesign.css";
 import "./productivity.css";
 import "./interface.css";
-import { loadWorkspace, saveWorkspace, removeFiles, type Workspace } from "./storage";
+import { loadLegacyPreferences, loadInterfacePreferences, saveInterfacePreferences, type Workspace } from "./storage";
+import {useWorkspaceStorage,LegacyImport} from './LocalWorkspace';
+import {useAcademicSyncNotice} from './AcademicSync';
 const NoteEditor = lazy(() => import("./NoteEditor").then(module=>({default:module.NoteEditor})));
+const AccountBoundary=lazy(()=>import('./AccountPanel'));
+const AccountPanel=lazy(()=>import('./AccountPanel').then(module=>({default:module.AccountPanel})));
+const AccountMenu=lazy(()=>import('./AccountPanel').then(module=>({default:module.AccountMenu})));
+const AccountSignOut=lazy(()=>import('./AccountPanel').then(module=>({default:module.AccountSignOut})));
 const PdfImport = lazy(() =>
   import("./PdfImport").then((module) => ({ default: module.PdfImport })),
 );
 import type { ImportedMeeting } from "./pdf-parser";
 import { ResourceLibrary } from "./ResourceLibrary";
+import Lenis from "lenis";
+import "lenis/dist/lenis.css";
+import {useLocation,useNavigate} from 'react-router';
 
-function App({ initial }: { initial: Workspace | undefined }) {
+function SmoothScroll({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reducedMotion.matches) return;
+
+    const lenis = new Lenis({
+      autoRaf: true,
+      anchors: true,
+    });
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  return <>{children}</>;
+}
+
+function App({ initial,onPreferences,preferences }: { initial: Workspace | undefined;onPreferences:(lang:'en'|'zh',dark:boolean)=>void;preferences:{lang:'en'|'zh';dark:boolean} }) {
+  const {saveWorkspace,removeFiles}=useWorkspaceStorage();
+  const syncNotice=useAcademicSyncNotice();
   const [appName,setAppName]=useState(initial?.appName ?? 'CourseDock');
-  const [lang, setLang] = useState<"en" | "zh">(initial?.lang ?? "en");
-  const [dark, setDark] = useState(initial?.dark ?? false);
+  const [lang, setLang] = useState<"en" | "zh">(initial?.lang ?? preferences.lang);
+  const [dark, setDark] = useState(initial?.dark ?? preferences.dark);
+  useEffect(()=>onPreferences(lang,dark),[lang,dark,onPreferences]);
   const t = (en: string, zh: string) => (lang === "en" ? en : zh);
   const [page, setPage] = useState(initial?.page ?? "overview");
   const [semester, setSemester] = useState(initial?.semester ?? "115-1");
@@ -63,6 +95,30 @@ function App({ initial }: { initial: Workspace | undefined }) {
   const [folderId,setFolderId]=useState(initial?.folderId ?? "");
   const [sidebarCollapsed,setSidebarCollapsed]=useState(initial?.sidebarCollapsed ?? false);
   const [mobileOpen,setMobileOpen]=useState(false);
+  const menuButton=React.useRef<HTMLButtonElement>(null);
+  const sidebar=React.useRef<HTMLElement>(null);
+  useEffect(()=>{
+    const screen=matchMedia('(max-width: 800px)');
+    const resize=()=>{if(!screen.matches)setMobileOpen(false);};
+    screen.addEventListener('change',resize);
+    return()=>screen.removeEventListener('change',resize);
+  },[]);
+  useEffect(()=>{
+    if(!mobileOpen)return;
+    const originalOverflow=document.body.style.overflow;
+    document.body.style.overflow='hidden';
+    sidebar.current?.querySelector<HTMLButtonElement>('.mobile-close')?.focus();
+    const keyboard=(event:KeyboardEvent)=>{
+      if(event.key==='Escape'){event.preventDefault();setMobileOpen(false);return;}
+      if(event.key!=='Tab')return;
+      const controls=Array.from(sidebar.current?.querySelectorAll<HTMLElement>('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),summary,[tabindex="0"]')??[]).filter(el=>el.getClientRects().length>0&&getComputedStyle(el).visibility!=='hidden'&&el.getAttribute('aria-hidden')!=='true');
+      const first=controls[0],last=controls[controls.length-1];
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}
+      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}
+    };
+    document.addEventListener('keydown',keyboard);
+    return()=>{document.body.style.overflow=originalOverflow;document.removeEventListener('keydown',keyboard);menuButton.current?.focus();};
+  },[mobileOpen]);
   const [courseTab,setCourseTab]=useState(initial?.courseTab ?? "notes");
   const [selectedCourse, setSelectedCourse] = useState(initial?.selectedCourse ?? "");
   const [quickKind,setQuickKind]=useState("assignment");
@@ -76,9 +132,11 @@ function App({ initial }: { initial: Workspace | undefined }) {
   const [status, setStatus] = useState("");
   const [saveError, setSaveError] = useState("");
   const [saved, setSaved] = useState(true);
+  const content=React.useMemo(()=>({appName,semesters,courses,tasks,meetings,notes,resources,folders}),[appName,semesters,courses,tasks,meetings,notes,resources,folders]);
+  const persistedContent=React.useRef(content);
   useEffect(() => {
     let current = true;
-    setSaved(false);
+    setSaved(content===persistedContent.current);
     void saveWorkspace({
       version: 1,
       folders,
@@ -100,6 +158,7 @@ function App({ initial }: { initial: Workspace | undefined }) {
     })
       .then(() => {
         if (current) {
+          persistedContent.current=content;
           setSaved(true);
           setSaveError("");
         }
@@ -108,8 +167,8 @@ function App({ initial }: { initial: Workspace | undefined }) {
         if (current)
           setSaveError(
             t(
-              "Could not save. Browser storage may be full or disabled. Keep this tab open.",
-              "無法儲存。瀏覽器儲存空間可能已滿或停用，請保留此分頁。",
+              "Could not finish saving. Check the sync notice and your connection or browser storage. Keep this tab open.",
+              "無法完成儲存。請查看同步提示，並檢查連線與瀏覽器儲存空間。請保留此分頁。",
             ),
           );
       });
@@ -117,6 +176,7 @@ function App({ initial }: { initial: Workspace | undefined }) {
       current = false;
     };
   }, [
+    content,
     folders,
     folderId,
     courseTab,
@@ -423,8 +483,10 @@ function App({ initial }: { initial: Workspace | undefined }) {
       <a className="skip" href="#main">
         {t("Skip to content", "跳至內容")}
       </a>
-      <button className="mobile-menu" onClick={()=>setMobileOpen(!mobileOpen)}>{t("Menu","選單")}</button>
-      <aside>
+      <button ref={menuButton} className="mobile-menu" aria-expanded={mobileOpen} aria-controls="workspace-navigation" onClick={()=>setMobileOpen(true)}><Menu size={20} aria-hidden="true"/>{t("Menu","選單")}</button>
+      {mobileOpen&&<button className="mobile-backdrop" tabIndex={-1} aria-label={t('Close navigation','關閉導覽')} onClick={()=>setMobileOpen(false)}/>}
+      <aside data-lenis-prevent ref={sidebar} id="workspace-navigation" role={mobileOpen?'dialog':undefined} aria-modal={mobileOpen?true:undefined} aria-label={mobileOpen?t('Main navigation','主要導覽'):undefined}>
+      <div className="mobile-drawer-head"><span>{t('Navigation','導覽')}</span><button className="mobile-close" aria-label={t('Close menu','關閉選單')} onClick={()=>setMobileOpen(false)}><X size={20} aria-hidden="true"/></button></div>
       <button className="sidebar-toggle" onClick={()=>setSidebarCollapsed(!sidebarCollapsed)} aria-label={t("Toggle sidebar","展開或收合側欄")}>☰</button>
         <div className="brand">
           <GraduationCap />
@@ -450,14 +512,10 @@ function App({ initial }: { initial: Workspace | undefined }) {
           {nav.map(([key, Icon, label]) => (key==='courses'||key==='resources') ? <Dropdown key={key} label={label} icon={<Icon size={19}/>} active={page===key}><button onClick={()=>{setPage(key);if(key==='courses')setSelectedCourse('');else setFolderId('');setMobileOpen(false);}}>{key==='courses'?t('All courses','所有課程'):t('All resources','所有資源')}</button><div className="nav-children">{key==='courses'?activeCourses.map(c=><details key={c.id}><summary><button onClick={e=>{e.preventDefault();const item=e.currentTarget.closest('details');if(item)item.open=!item.open;setSelectedCourse(c.id);setCourseTab('notes');setPage('courses');setMobileOpen(false);}}>{c.name}<span aria-hidden="true" className="menu-chevron">⌄</span></button></summary>{notes.filter(n=>n.courseId===c.id).map(n=><button className="tree-note" key={n.id} onClick={()=>{setSelectedCourse(c.id);setCourseTab('notes');setPage('courses');setMobileOpen(false);setTimeout(()=>document.getElementById('note-'+n.id)?.scrollIntoView({block:'center'}),0);}}>{n.title}</button>)}</details>):renderFolders('')}</div></Dropdown>:<button key={key} aria-current={page===key?'page':undefined} className={page===key?'active':''} onClick={()=>{setPage(key);setMobileOpen(false);}}><Icon size={19}/>{label}</button>)}
         </nav>
         <div className="sidebar-bottom">
-          <span className="avatar">FC</span>
-          <div>
-            <strong>{t("Personal workspace", "個人工作區")}</strong>
-            <small>{t("Saved on this device", "儲存於此裝置")}</small>
-          </div>
+          <Suspense fallback={null}><AccountMenu zh={lang==='zh'} onEdit={()=>{setPage('settings');setMobileOpen(false);setTimeout(()=>document.querySelector('.student-profile input')?.scrollIntoView({block:'center'}),0);}}/></Suspense>
         </div>
       </aside>
-      <main id="main">
+      <main id="main" inert={mobileOpen?true:undefined}>
         <header>
           <span>
             {semester} / {t("Academic workspace", "學習工作區")}
@@ -470,12 +528,7 @@ function App({ initial }: { initial: Workspace | undefined }) {
             <CalendarDays size={16} />
           </button>
         </header>
-        <div className="preview-banner">
-          {t(
-            "Saved in this browser. Account sign-in and cross-device sync are not connected yet.",
-            "資料儲存於此瀏覽器。帳號登入與跨裝置同步尚未連接。",
-          )}
-        </div>
+        {syncNotice}
         {saveError && (
           <p role="alert" className="error">
             {saveError}
@@ -856,12 +909,7 @@ function App({ initial }: { initial: Workspace | undefined }) {
             <button onClick={() => openForm("semester")}>
               {t("Add semester", "新增學期")}
             </button>
-            <p className="muted">
-              {t(
-                "Sign-in, synchronized storage and account deletion are not connected in this development preview.",
-                "此開發預覽尚未連接登入、同步儲存、ZIP 匯出與帳號刪除功能。",
-              )}
-            </p>
+            <Suspense fallback={<LoadingState compact zh={lang==='zh'}/>}><AccountPanel zh={lang==='zh'} dark={dark}/></Suspense>
             <DataExport zh={lang==='zh'} workspace={{version:1,appName,selectedCourse,lang,dark,page,semester,semesters,courses,tasks,meetings,notes,resources,folders,folderId,courseTab,sidebarCollapsed}}/>
           </section>
         )}
@@ -1057,22 +1105,50 @@ function Modal({
 }
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ErrorBoundary><WorkspaceLoader /></ErrorBoundary>
+    <SmoothScroll>
+      <ErrorBoundary><AccountRoot /></ErrorBoundary>
+    </SmoothScroll>
   </React.StrictMode>,
 );
-function WorkspaceLoader() {
+function AccountRoot(){
+  const [preferences,setPreferences]=useState({lang:'en' as 'en'|'zh',dark:false});
+  const [ready,setReady]=useState(false);
+  useEffect(()=>{document.documentElement.dataset.theme=preferences.dark?'dark':'light';document.documentElement.lang=preferences.lang==='zh'?'zh-Hant':'en';},[preferences]);
+  const onPreferences=React.useCallback((lang:'en'|'zh',dark:boolean)=>{setPreferences(previous=>previous.lang===lang&&previous.dark===dark?previous:{lang,dark});void saveInterfacePreferences({lang,dark}).catch(()=>{});},[]);
+  useEffect(()=>{let active=true;void Promise.all([loadInterfacePreferences(),loadLegacyPreferences()]).then(([saved,value])=>{if(active){const settings=saved??value;if(settings)setPreferences({lang:settings.lang,dark:settings.dark});setReady(true);}}).catch(()=>{if(active)setReady(true);});return()=>{active=false;};},[]);
+  if(!ready)return <LoadingState/>;
+  const changeLandingLanguage=(lang:'en'|'zh')=>{
+    if(location.pathname.startsWith(`${import.meta.env.BASE_URL}sign-`)){
+      // Initialize the managed auth UI with one locale; dynamic locale/theme updates can race.
+      void saveInterfacePreferences({lang,dark:preferences.dark}).then(()=>location.reload()).catch(()=>onPreferences(lang,preferences.dark));
+    }else onPreferences(lang,preferences.dark);
+  };
+  return <Suspense fallback={<LoadingState/>}><AccountBoundary zh={preferences.lang==='zh'} dark={preferences.dark} onLanguageChange={changeLandingLanguage} onAppearanceChange={dark=>onPreferences(preferences.lang,dark)}><WorkspaceLoader onPreferences={onPreferences} preferences={preferences}/></AccountBoundary></Suspense>;
+}
+function WorkspaceLoader({onPreferences,preferences}:{onPreferences:(lang:'en'|'zh',dark:boolean)=>void;preferences:{lang:'en'|'zh';dark:boolean}}) {
+  const storage=useWorkspaceStorage();
+  const {pathname}=useLocation();
+  const navigate=useNavigate();
   const [initial, setInitial] = useState<Workspace | undefined>();
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [review,setReview]=useState(false);
+  const [attempt,setAttempt]=useState(0);
   useEffect(() => {
-    void loadWorkspace()
-      .then((value) => {
-        setInitial(value);
+    let active=true;
+    void Promise.all([storage.loadWorkspace(),storage.legacySummary()])
+      .then(([value,legacy]) => {
+        if(!active)return;
+        if(!value&&legacy){setReview(true);return;}
+        setInitial(pathname==='/dashboard'&&value?{...value,page:'overview'}:value);
         setReady(true);
+        if(pathname==='/dashboard')navigate('/',{replace:true});
       })
-      .catch(() => setFailed(true));
-  }, []);
+      .catch(() => {if(active)setFailed(true);});
+    return()=>{active=false;};
+  }, [storage,attempt]);
   if (failed) return <><ErrorPage storage/><LegalPages/></>;
+  if(review&&!ready)return <main id="main" className="local-import-page"><h1>{preferences.lang==='zh'?'選擇此帳號的工作區':'Choose this account’s workspace'}</h1><LegacyImport zh={preferences.lang==='zh'} onImported={()=>{setReview(false);setAttempt(value=>value+1);}} onSkip={()=>{setReview(false);setReady(true);if(pathname==='/dashboard')navigate('/',{replace:true});}}/><Suspense fallback={null}><AccountSignOut zh={preferences.lang==='zh'}/></Suspense><LegalPages zh={preferences.lang==='zh'}/></main>;
   if (!ready) return <LoadingState/>;
-  return <App initial={initial} />;
+  return <App initial={initial} onPreferences={onPreferences} preferences={preferences}/>;
 }

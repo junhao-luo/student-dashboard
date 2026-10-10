@@ -7,7 +7,7 @@ import {
   Trash2,
   Link as LinkIcon,
 } from "lucide-react";
-import { getFile, putFile, removeFile } from "./storage";
+import {useWorkspaceStorage} from './LocalWorkspace';
 import { folderDescendants, type Folder } from "./domain";
 import { Folder as FolderIcon } from "lucide-react";
 import type { Course, Resource } from "./domain";
@@ -23,6 +23,7 @@ export function ResourceLibrary({
   zh: boolean;
   folders:Folder[]; onFoldersChange:(folders:Folder[])=>void; folderId:string; onFolderChange:(id:string)=>void; initialFilter?:string;
 }) {
+  const {getFile,putFile,removeFile}=useWorkspaceStorage();
   const [sort, setSort] = useState("newest");
   const [filter, setFilter] = useState(initialFilter ?? "all");
   const [error, setError] = useState("");

@@ -1,26 +1,34 @@
 # Delivery plan
 
-Updated: 2026-10-09, Asia/Taipei. Local development is authorized. All six capability areas must launch together; a preview is not the release.
+Updated: 2026-10-10, Asia/Taipei. Local development, production configuration and beta publication at https://eljhon.me/student-dashboard are authorized. All six capability areas must launch together; a preview is not the release.
+
+Current production setup: Clerk production instance created; five approved authentication CNAMEs saved in Namecheap. Google project coursedock-511204 and consent branding created, web-client form prepared. Social provider credential configuration still needs verification. Convex production issuer set and deployment dry run passed. Subpath routing test added; fifteen frontend tests, thirteen backend tests and build pass. Next configure JWT audience, OAuth credentials/testing users, Vercel repository access/project/environment and portfolio rewrite; then perform deployed authentication, reload, isolation, header, secret and remaining release checks before opening the beta.
 
 ## Completed local foundation
 
 - React/TypeScript/Vite app, light/dark and English/Traditional Chinese.
-- Semester courses, course notes using plain Markdown, assignments/exams and deadline projections, manual weekly classes.
+- Semester courses, rich course notes with Markdown import, assignments/exams and deadline projections, manual weekly classes.
 - Supported MyFCU sample import with correction, merge/replace and safe failure.
 - Resource links/files, grouping, date sorting, renaming, nested folders/moves/downloads.
 - Refresh-safe IndexedDB records/files and selection/preferences.
 - In-app school calendar, loading/recovery states, draft legal documents.
 - Edge-to-edge shell, stable sidebar/mobile drawer, unified dropdown rows and state arrows.
 
-Evidence recorded in Memory.md and Browser-review.md. Latest foundation: nine focused tests and successful production build. Browser checks have been scoped to each change; they are not a production security audit.
+Evidence recorded in Memory.md and Browser-review.md. Latest foundation: fourteen application tests and thirteen server/client-sync tests and successful production build. Browser checks have been scoped to each change; they are not a production security audit.
 
-## 1. Notes and portable data — next local slice
+## 1. Notes and portable data
 
-Implement accepted rich blocks, Markdown import, upload-only note PDFs, images, accessible reorder, legacy-note migration and persistence. Implement ZIP export of records/blocks/Markdown/original files, preserving relationships and exposing missing-file failures. Verify in a disposable browser, including refresh, both languages/themes, mobile, hostile links/content, and ZIP contents. Do not silently discard original note bodies or attachments.
+Completed locally: accepted rich blocks, Markdown import, upload-only PDFs, local images, drag controls/keyboard reorder, legacy-note migration and persistence. ZIP export includes records/blocks/Markdown/original files, preserving relationships and refusing missing-file backups. Browser checks passed import/refresh, PDF/image bytes, keyboard reorder, English/light and Traditional Chinese/dark, mobile widths and note/file deletion. Pure ZIP tests verify relationships/bytes/path safety. Drag reorder is provided by the editor but its drag gesture has not been exercised. Large exports and real assistive technology remain release checks. Deadlines and class meetings can now be edited without creating duplicates or resetting completion.
 
 ## 2. Managed authentication and private Convex records
 
 Select/configure a free provider supporting Google, GitHub, passwords and email-code reset; complete all signup profiles. Connect Convex using verified identity, strict schemas, ownership checks, bounded responses and endpoint budgets. Migrate local data only through an explicit authenticated import/review; never implicitly share a device's workspace between accounts. Verify two users, forged identity, field and relationship tampering, sessions/revocation and network recovery. Requires configured provider/Convex projects and safe environment setup.
+
+Implemented foundation only: profiles/courses/tasks/meetings with gated actions, identity-derived owners, profile completion gate, strict validators, bounded responses and read/write budgets. Tasks/meetings paginate and verify linked course ownership. Course deletion refuses child records pending complete cascade. Free Clerk/Convex development projects, Google/GitHub/email-password configuration, separate sign-in/sign-up pages, an app-wide required-profile gate, Settings profile editor and sidebar account popup are connected. Real Google login/profile reload/logout, Overview redirect and landing-page theme carryover have been verified. The circular photo and initials fallback, English/Chinese landing controls and remembered light/dark mode are implemented. These server functions are installed on the development backend. End-to-end account/profile/recovery/session checks, notes/resources/files, notes/resources/files synchronization and full release verification remain work. This phase remains incomplete. Configuration checklist and endpoint inventory: docs/Cloud-setup.md.
+
+Account-local prerequisite completed: records, files and export reads are bound to the signed-in account. Older shared data is preserved behind a reviewed, ownership-confirmed import into an empty account. Atomic import prevents duplicate claims and incomplete copies; local per-account quota writes are transactional. This does not provide server-side private files or cloud synchronization. Browser storage remains accessible to the device owner.
+
+First phase-2 course/planner slice is implemented below. Next: real account/multi-device verification, conflict/backup recovery refinements and notes/resources/private-file synchronization. Do not auto-upload legacy data.
 
 ## 3. Private attachments and export/deletion
 
@@ -36,10 +44,18 @@ Complete every applicable S01–S24 control in Rules.md with executable evidence
 
 ## 6. Deployment and handoff
 
-Prepare static Cloudflare build/routing/headers, GitHub source workflow and Convex environment separation. Test direct navigation/reload, multi-device sync and failure recovery. Push/publish only within explicit authorization. Do not claim production readiness while applicable gates remain unresolved.
+Prepare static Vercel build/routing/headers, GitHub source workflow and Convex environment separation. Test direct navigation/reload, multi-device sync and failure recovery. Push/publish only within explicit authorization. Do not claim production readiness while applicable gates remain unresolved.
 
 ## Pending decisions and setup
 
-Final app name; configured auth/Convex projects; production origin; operator/privacy contact; free-tier fail-closed policy; backup schedule/retention. No deadline, school-email verification, alternating weeks, or school-account connection is required.
+Final app name; production origin; operator/privacy contact; free-tier fail-closed policy; backup schedule/retention. No deadline, school-email verification, alternating weeks, or school-account connection is required.
 
 [PRD](PRD.md) · [Architecture](Architecture.md) · [Rules](Rules.md) · [Phases](Phases.md) · [Design](Design.md) · [Memory](Memory.md)
+
+## Completed profile refinement, 2026-10-10
+
+School email entry removed; backend derives/stores it on save and student-ID changes. Taiwan mobile format is enforced on both sides and normalized. Official FCU undergraduate/graduate dropdown includes search and custom fallback, with existing custom values preserved. Nine server tests, production build and synthetic browser form checks pass; updated functions installed on the authorized Convex development deployment. Real new-account onboarding remains a release check; synthetic form tests do not establish provider signup behavior.
+
+## Academic slice completed and hosting changed, 2026-10-10
+
+Vercel Hobby is the frontend target; GitHub remains source. Local vercel.json build/SPA/header configuration is prepared, without a Vercel project or public deployment. First course/planner sync slice is implemented on the development Convex backend: reviewed import, original IDs/relationships, owner-private bounded snapshot, serialized saves, revision conflict refusal and pending-request recovery. Other devices fetch account academic data on reopening. Notes/resources/files/reminders/deletion and full release checks remain unfinished. The UI snapshot does not use the older per-record foundation tables. Next slice: improve conflict resolution/backup recovery and wire notes/resources with authenticated private files; test real account transport and multiple devices.

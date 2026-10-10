@@ -1,7 +1,9 @@
 import {useState} from 'react';
-import {getFile,type Workspace} from './storage';
+import type {Workspace} from './storage';
+import {useWorkspaceStorage} from './LocalWorkspace';
 import {LoadingState} from './Interface';
 export function DataExport({workspace,zh}:{workspace:Workspace;zh:boolean}){
+  const {getFile}=useWorkspaceStorage();
   const [busy,setBusy]=useState(false),[error,setError]=useState('');
   const t=(en:string,cn:string)=>zh?cn:en;
   async function download(){

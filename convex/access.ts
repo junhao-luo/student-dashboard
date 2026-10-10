@@ -1,6 +1,7 @@
 import {makeFunctionReference} from 'convex/server';
 import {ConvexError,v} from 'convex/values';
 import {internalMutation,type ReadCtx,type WriteCtx,type ActionCtx} from './model';
+import type {GenericId} from 'convex/values';
 export async function owner(ctx:Pick<ReadCtx,'auth'>|Pick<ActionCtx,'auth'>){
   const identity=await ctx.auth.getUserIdentity();
   if(!identity)throw new ConvexError('SIGN_IN_REQUIRED');
@@ -10,6 +11,16 @@ export async function requireProfile(ctx:ReadCtx|WriteCtx,id:string){
   const profile=await ctx.db.query('profiles').withIndex('by_owner',q=>q.eq('owner',id)).unique();
   if(!profile)throw new ConvexError('PROFILE_REQUIRED');
   return profile;
+}
+export async function ownedCourse(ctx:ReadCtx|WriteCtx,id:GenericId<'courses'>){
+  const who=await owner(ctx);await requireProfile(ctx,who);
+  const course=await ctx.db.get(id);
+  if(!course||course.owner!==who)throw new ConvexError('NOT_FOUND');
+  return who;
+}
+export const pageArgs={cursor:v.union(v.string(),v.null()),limit:v.number()};
+export function checkPage(cursor:string|null,limit:number){
+  if((cursor!==null&&cursor.length>4096)||!Number.isInteger(limit)||limit<1||limit>50)throw new ConvexError('INVALID_LIST');
 }
 // Queries cannot change counters. Public actions consume a transactional budget before internal reads/writes.
 // https://docs.convex.dev/functions/actions

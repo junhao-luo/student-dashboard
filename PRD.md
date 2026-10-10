@@ -1,6 +1,8 @@
 # Product requirements
 
-Updated: 2026-10-09, Asia/Taipei. This is the current specification; it replaces earlier discovery drafts.
+Updated: 2026-10-10, Asia/Taipei. This is the current specification; it replaces earlier discovery drafts.
+
+Latest deployment request: the user authorized preparing and publishing a beta at https://eljhon.me/student-dashboard. The portfolio already uses Vercel at the domain root. Public support/privacy contact is support@eljhon.me; operator is Eljhon Steve (羅俊豪). Keep the initial five-user scope and mandatory security evidence. A beta label does not waive private-data protections or unfinished acceptance requirements.
 
 ## Purpose and scope
 
@@ -10,10 +12,10 @@ Manual entry is the default. No school-account connection, Moodle synchronizatio
 
 ## Confirmed requirements
 
-- Free operation for five users. GitHub holds source, Cloudflare Pages hosts the frontend, Convex holds synchronized private records. Do not enable paid overages.
-- Google, GitHub, and email/password authentication through a managed provider. Password reset uses an emailed verification code. Every signup requires 姓名, 學號, 系所, 班級, school email (student_id@o365.fcu.edu.tw), and contact number. No school-email verification is required. These fields never grant permissions.
+- Free operation for five users. GitHub holds source, Vercel hosts the frontend, Convex holds synchronized private records. Do not enable paid overages.
+- Google, GitHub, and email/password authentication through a managed provider. Password reset uses an emailed verification code. Every signup requires 姓名, 學號, 系所／學程, 班級, and mobile number. School email is generated server-side from the lowercase student ID plus @o365.fcu.edu.tw, and is not an editable signup field. Accept only 09xxxxxxxx or +8869xxxxxxxx, stored as 09xxxxxxxx. The department dropdown searches 54 undergraduate and 72 graduate titles from FCU’s official directories and allows custom entry; existing custom values are preserved. No school-email verification is required. These fields never grant permissions.
 - Every user's records and attachments are private. Export records, Markdown notes, and original attachments in a ZIP. Account deletion must remove provider account, records, files, and reminders; backup retention must be disclosed.
-- English and Traditional Chinese in Settings; light and dark modes. Productive academic design using the supplied references, with an edge-to-edge workspace and unified sidebar rows.
+- English and Traditional Chinese plus light/dark controls on the hero landing page and in Settings. Remember both on this device across refresh and sign-in. Productive academic design using the supplied references, with an edge-to-edge workspace and unified sidebar rows.
 - Courses include name, code, instructor, credits, classroom, and semester. Use Taiwan semester labels such as 115-1.
 - Notes belong directly to courses. Support headings, lists, checkboxes, tables, images, code blocks, block reordering with keyboard alternatives, Markdown import, and PDF attachments. Note PDFs are upload-only, without editing or extraction.
 - Assignments and exams have due times in Asia/Taipei, completion state, and optional email reminders to school email. Offset is customizable and defaults to one day before. Sender: reminder@eljhon.me.
@@ -33,9 +35,9 @@ Manual entry is the default. No school-account connection, Moodle synchronizatio
 
 ## Current implementation and gaps
 
-The local React preview has courses, plain Markdown notes, deadline views, manual timetable, supported sample PDF import, nested resources, browser persistence, settings, calendar embed, loading/errors, and draft legal pages. Its IndexedDB data stays in this browser. It has no accounts, Convex sync, email sending, or production access protection.
+The local React preview has courses, rich block notes with Markdown import and PDF/image attachments, workspace ZIP export, editable deadlines/class meetings, deadline views, supported sample PDF import, nested resources, browser persistence, settings, calendar embed, loading/errors, and draft legal pages. Its IndexedDB data stays in this browser. Dedicated sign-in/sign-up pages connect Clerk development sessions and private Convex student profiles. Missing profiles block the workspace until all five inputs are saved. Successful login opens Overview; the bottom-left profile popup offers Edit profile and Log out. Academic records/files still remain in this browser; academic records and attachments now use separate account namespaces on this device, with an explicit reviewed import for the older shared workspace. Courses/planner can now be synchronized after explicit review; notes, resources and attachments remain device-local. Other devices fetch the latest academic snapshot on reopening; simultaneous edits require conflict review. This local separation does not protect against someone with access to browser storage. Email sending and production access protection remain unfinished.
 
-The rich editor, note imports/attachments, export, managed authentication/profile, backend synchronization, reminders, account deletion, security verification, and deployment remain work items in Phases.md. Exact provider configuration, production origin, privacy contact/operator, and backup retention are unresolved. Do not ask again about confirmed choices above.
+Local rich editor, note imports/attachments and ZIP export are implemented. Markdown parsing is capped at 1 MiB and rich note content at 2 MiB for processing; original imported Markdown is retained. Formatting can change during import/export, so canonical blocks are included in ZIP records. Private profile/course/planner server functions are installed on the free Convex development deployment. Clerk is configured for Google, GitHub and email/password; end-to-end account/recovery verification remains pending. The five-input profile with a server-generated school email UI is connected. Notes/resources synchronization, private server attachments, reminders, account deletion, security verification and production deployment remain work items in Phases.md. Production origin, privacy contact/operator and backup retention are unresolved. Do not ask again about confirmed choices above.
 
 ## References
 

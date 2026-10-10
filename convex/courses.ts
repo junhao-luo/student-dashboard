@@ -22,6 +22,8 @@ export const write=internalMutation({args:{id:v.optional(v.id('courses')),course
 export const remove=internalMutation({args:{id:v.id('courses')},returns:v.null(),handler:async(ctx,{id})=>{
   const who=await owner(ctx);await requireProfile(ctx,who);const course=await ctx.db.get(id);
   if(!course||course.owner!==who)throw new ConvexError('NOT_FOUND');
+  if(await ctx.db.query('tasks').withIndex('by_owner_course',q=>q.eq('owner',who).eq('courseId',id)).first())throw new ConvexError('COURSE_NOT_EMPTY');
+  if(await ctx.db.query('meetings').withIndex('by_owner_course',q=>q.eq('owner',who).eq('courseId',id)).first())throw new ConvexError('COURSE_NOT_EMPTY');
   await ctx.db.delete(id);return null;
 }});
 export const list=action({args:{semester:v.string(),limit:v.number()},returns:v.array(output),handler:async(ctx,args)=>{
