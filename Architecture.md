@@ -1,5 +1,7 @@
 # Architecture
 
+Latest hosting state, 2026-10-10: Vercel Hobby project coursedock is connected to student-dashboard. The codex/beta-preview branch uses development Clerk/Convex public identifiers in Preview only, with All Deployments authentication protection. Main remains the production tracking branch; no production environment values or backend migration were installed. The verified preview preserves /student-dashboard/ routes. Portfolio proxy routing is still pending; detailed build/login evidence is in docs/Beta-deployment.md.
+
 Updated: 2026-10-10, Asia/Taipei. Current local implementation and intended account architecture are distinguished below.
 
 Beta configuration in progress: production builds use Vite base /student-dashboard/ and React Router uses the matching basename. Clerk redirects include this prefix exactly once; router callbacks reject external or out-of-app redirects. Sign-out returns to the prefixed sign-in page. Development remains at /. Production Clerk instance: ins_3KUL5t6nQ81c6DVQamuN4h3k56i, domain eljhon.me, issuer https://clerk.eljhon.me. Production Convex: cheery-dachshund-214, with AUTH_JWT_ISSUER configured. Functions have passed a deployment dry run but are not yet installed there. Production OAuth credentials, JWT template verification, Vercel project, portfolio path rewrite and live session checks remain pending. Do not replace local development credentials with production configuration.

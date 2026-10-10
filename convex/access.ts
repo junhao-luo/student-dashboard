@@ -22,6 +22,15 @@ export const pageArgs={cursor:v.union(v.string(),v.null()),limit:v.number()};
 export function checkPage(cursor:string|null,limit:number){
   if((cursor!==null&&cursor.length>4096)||!Number.isInteger(limit)||limit<1||limit>50)throw new ConvexError('INVALID_LIST');
 }
+export async function requireRecordCapacity(ctx:WriteCtx,table:'courses'|'tasks'|'meetings',who:string){
+  const cap=table==='courses'?100:1000;
+  const rows=table==='courses'
+    ?await ctx.db.query('courses').withIndex('by_owner_semester',q=>q.eq('owner',who)).take(cap)
+    :table==='tasks'
+      ?await ctx.db.query('tasks').withIndex('by_owner_course',q=>q.eq('owner',who)).take(cap)
+      :await ctx.db.query('meetings').withIndex('by_owner_course',q=>q.eq('owner',who)).take(cap);
+  if(rows.length>=cap)throw new ConvexError('RECORD_LIMIT_REACHED');
+}
 // Queries cannot change counters. Public actions consume a transactional budget before internal reads/writes.
 // https://docs.convex.dev/functions/actions
 export const consume=internalMutation({

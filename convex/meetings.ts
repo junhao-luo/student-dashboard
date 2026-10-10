@@ -1,7 +1,7 @@
 import {makeFunctionReference} from 'convex/server';
 import {ConvexError,v} from 'convex/values';
 import {action,internalMutation,internalQuery} from './model';
-import {owner,guard,ownedCourse,pageArgs,checkPage} from './access';
+import {owner,guard,ownedCourse,pageArgs,checkPage,requireRecordCapacity} from './access';
 import {meetingFields} from './schema';
 import {validateMeeting} from '../src/domain';
 const value=v.object(meetingFields),output=v.object({id:v.id('meetings'),...meetingFields});
@@ -17,6 +17,7 @@ export const write=internalMutation({args:{id:v.optional(v.id('meetings')),meeti
   if(validateMeeting({...meeting,id:''})||meeting.room.length>100)throw new ConvexError('INVALID_MEETING');
   const data={...meeting,room:meeting.room.trim()};
   if(id){const current=await ctx.db.get(id);if(!current||current.owner!==who)throw new ConvexError('NOT_FOUND');await ctx.db.patch(id,data);return id;}
+  await requireRecordCapacity(ctx,'meetings',who);
   return await ctx.db.insert('meetings',{owner:who,...data});
 }});
 export const remove=internalMutation({args:{id:v.id('meetings')},returns:v.null(),handler:async(ctx,{id})=>{

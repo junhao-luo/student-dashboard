@@ -8,7 +8,11 @@
     "build": "tsc --noEmit && vite build",
     "test": "node --experimental-strip-types --test src/*.test.ts",
     "test:server": "vitest run",
-    "check:server": "tsc --project convex/tsconfig.json --noEmit"
+    "check:server": "tsc --project convex/tsconfig.json --noEmit",
+    "lint:security": "node scripts/security-check.mjs",
+    "check:security-history": "node scripts/security-check.mjs --history",
+    "verify": "npm run lint:security && npm test && npm run test:server && npm run check:server && npm audit --audit-level=high",
+    "build:release": "npm run verify && node scripts/release-build.mjs"
   },
   "dependencies": {
     "@blocknote/core": "^0.55.0",

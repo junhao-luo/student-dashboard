@@ -7,7 +7,7 @@ export function academicData(value:AcademicData):AcademicData{
   return {semesters:value.semesters,courses:value.courses,tasks:value.tasks,meetings:value.meetings};
 }
 export function validAcademic(data:AcademicData):boolean {
-  if(data.semesters.length>30||data.courses.length>100||data.tasks.length>1000||data.meetings.length>1000||JSON.stringify(data).length>400000)return false;
+  if(data.semesters.length>30||data.courses.length>100||data.tasks.length>1000||data.meetings.length>1000||new TextEncoder().encode(JSON.stringify(data)).byteLength>400000)return false;
   if(new Set(data.semesters).size!==data.semesters.length||!data.semesters.length||data.semesters.some(s=>!/^\d{3}-[12]$/.test(s)))return false;
   const validId=(id:string)=>/^[A-Za-z0-9_-]{1,80}$/.test(id);
   for(const items of [data.courses,data.tasks,data.meetings])if(new Set(items.map(i=>i.id)).size!==items.length||items.some(i=>!validId(i.id)))return false;

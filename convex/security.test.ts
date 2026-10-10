@@ -10,6 +10,62 @@ const course={semester:'115-1',code:'CS101',name:'Algorithms',instructor:'Test I
 const ref=(name:string)=>makeFunctionReference<'action'>(name);
 const user=(t:ReturnType<typeof convexTest>,id:string)=>t.withIdentity({subject:id,issuer:'https://test-issuer.example',tokenIdentifier:`https://test-issuer.example|${id}`});
 const academic={semesters:['115-1'],courses:[{...course,id:'local-course'}],tasks:[{id:'local-task',courseId:'local-course',title:'Exam',kind:'exam',due:'2026-10-11T02:00:00.000Z',done:false,reminderDays:1}],meetings:[{id:'local-meeting',courseId:'local-course',day:1,start:'09:10',end:'10:00',room:'A101'}]};
+
+test('every public business endpoint denies anonymous identity and exhausted shared budgets',async()=>{
+ const t=convexTest(schema,modules),a=user(t,'A');await a.action(ref('profiles:save'),{profile});
+ const courseId=await a.action(ref('courses:save'),{course});
+ const task={courseId,title:'Study',kind:'assignment',due:'2026-10-11T02:00:00.000Z',done:false,reminderDays:null};
+ const meeting={courseId,day:1,start:'09:10',end:'10:00',room:'A101'};
+ const taskId=await a.action(ref('tasks:save'),{task}),meetingId=await a.action(ref('meetings:save'),{meeting});
+ const endpoints:[string,Record<string,unknown>][]=[
+  ['profiles:get',{}],['profiles:save',{profile}],['academic:get',{}],['academic:save',{revision:0,requestId:'budget',data:academic}],
+  ['courses:list',{semester:'115-1',limit:1}],['courses:save',{course}],['courses:deleteCourse',{id:courseId}],
+  ['tasks:list',{courseId,cursor:null,limit:1}],['tasks:save',{task}],['tasks:deleteTask',{id:taskId}],
+  ['meetings:list',{courseId,cursor:null,limit:1}],['meetings:save',{meeting}],['meetings:deleteMeeting',{id:meetingId}],
+ ];
+ await t.run(async ctx=>{
+  const buckets=await ctx.db.query('limits').collect();
+  for(const scope of ['read','write'] as const){
+   const bucket=buckets.find(b=>b.scope===scope);
+   const values={count:scope==='read'?60:20,window:Date.now()};
+   if(bucket)await ctx.db.patch(bucket._id,values);else await ctx.db.insert('limits',{owner:'https://test-issuer.example|A',scope,...values});
+  }
+ });
+ for(const [name,args]of endpoints){
+  await expect(t.action(ref(name),args),name).rejects.toThrow('SIGN_IN_REQUIRED');
+  await expect(a.action(ref(name),args),name).rejects.toThrow('RATE_LIMITED');
+ }
+ expect(await t.run(async ctx=>(await ctx.db.query('courses').collect()).length)).toBe(1);
+ expect(await t.run(async ctx=>(await ctx.db.query('tasks').collect()).length)).toBe(1);
+});
+
+test('concurrent writes cannot exceed one identity budget',async()=>{
+ const t=convexTest(schema,modules),a=user(t,'A');
+ const results=await Promise.allSettled(Array.from({length:25},()=>a.action(ref('profiles:save'),{profile})));
+ expect(results.filter(r=>r.status==='fulfilled')).toHaveLength(20);
+ for(const r of results)if(r.status==='rejected')expect(String(r.reason)).toContain('RATE_LIMITED');
+});
+
+test('record capacity is atomic, private per owner, and still permits edits at the cap',async()=>{
+ const t=convexTest(schema,modules),a=user(t,'A'),b=user(t,'B');
+ await a.action(ref('profiles:save'),{profile});await b.action(ref('profiles:save'),{profile});
+ await t.run(async ctx=>{for(let i=0;i<99;i++)await ctx.db.insert('courses',{owner:'https://test-issuer.example|A',...course});});
+ const race=await Promise.allSettled([a.action(ref('courses:save'),{course}),a.action(ref('courses:save'),{course})]);
+ expect(race.filter(r=>r.status==='fulfilled')).toHaveLength(1);
+ expect(race.filter(r=>r.status==='rejected').map(r=>String(r.reason))).toEqual([expect.stringContaining('RECORD_LIMIT_REACHED')]);
+ const id=await t.run(async ctx=>(await ctx.db.query('courses').first())!._id);
+ await expect(a.action(ref('courses:save'),{id,course:{...course,name:'Edited at capacity'}})).resolves.toBe(id);
+ await expect(b.action(ref('courses:save'),{course})).resolves.toBeTruthy();
+});
+
+test('multibyte snapshots cannot bypass the byte budget',async()=>{
+ const t=convexTest(schema,modules),a=user(t,'A');await a.action(ref('profiles:save'),{profile});
+ const data={...academic,tasks:Array.from({length:900},(_,i)=>({...academic.tasks[0],id:`task-${i}`,title:'學'.repeat(200)}))};
+ expect(JSON.stringify(data).length).toBeLessThan(400000);
+ expect(new TextEncoder().encode(JSON.stringify(data)).byteLength).toBeGreaterThan(400000);
+ await expect(a.action(ref('academic:save'),{revision:0,requestId:'oversized-unicode',data})).rejects.toThrow('INVALID_ACADEMIC');
+ expect(await a.action(ref('academic:get'),{})).toBeNull();
+});
 test('academic import preserves IDs, is owner-isolated, idempotent and rejects stale writes',async()=>{
  const t=convexTest(schema,modules),a=user(t,'A'),b=user(t,'B');
  await expect(t.action(ref('academic:get'),{})).rejects.toThrow('SIGN_IN_REQUIRED');

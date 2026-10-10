@@ -1,7 +1,7 @@
 import {makeFunctionReference} from 'convex/server';
 import {ConvexError,v} from 'convex/values';
 import {action,internalMutation,internalQuery} from './model';
-import {owner,guard,ownedCourse,pageArgs,checkPage} from './access';
+import {owner,guard,ownedCourse,pageArgs,checkPage,requireRecordCapacity} from './access';
 import {taskFields} from './schema';
 const value=v.object(taskFields),output=v.object({id:v.id('tasks'),...taskFields});
 const listArgs={courseId:v.id('courses'),...pageArgs};
@@ -18,6 +18,7 @@ export const write=internalMutation({args:{id:v.optional(v.id('tasks')),task:val
   if(!task.title.trim()||task.title.length>200||!Number.isFinite(time)||new Date(time).toISOString()!==task.due||time<Date.UTC(2000,0,1)||time>=Date.UTC(2100,0,1)||(task.reminderDays!==null&&(!Number.isInteger(task.reminderDays)||task.reminderDays<0||task.reminderDays>365)))throw new ConvexError('INVALID_TASK');
   const data={...task,title:task.title.trim()};
   if(id){const current=await ctx.db.get(id);if(!current||current.owner!==who)throw new ConvexError('NOT_FOUND');await ctx.db.patch(id,data);return id;}
+  await requireRecordCapacity(ctx,'tasks',who);
   return await ctx.db.insert('tasks',{owner:who,...data});
 }});
 export const remove=internalMutation({args:{id:v.id('tasks')},returns:v.null(),handler:async(ctx,{id})=>{

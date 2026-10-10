@@ -1,7 +1,7 @@
 import {makeFunctionReference} from 'convex/server';
 import {ConvexError,v} from 'convex/values';
 import {action,internalMutation,internalQuery} from './model';
-import {owner,guard,requireProfile} from './access';
+import {owner,guard,requireProfile,requireRecordCapacity} from './access';
 import {courseValue,courseFields} from './schema';
 const output=v.object({id:v.id('courses'),...courseFields});
 function validateCourse(c:{semester:string;name:string;code:string;instructor:string;credits:number;room:string;color:string}){
@@ -17,6 +17,7 @@ export const write=internalMutation({args:{id:v.optional(v.id('courses')),course
   const who=await owner(ctx);await requireProfile(ctx,who);validateCourse(course);
   const data={...course,name:course.name.trim()};
   if(id){const current=await ctx.db.get(id);if(!current||current.owner!==who)throw new ConvexError('NOT_FOUND');await ctx.db.patch(id,data);return id;}
+  await requireRecordCapacity(ctx,'courses',who);
   return await ctx.db.insert('courses',{owner:who,...data});
 }});
 export const remove=internalMutation({args:{id:v.id('courses')},returns:v.null(),handler:async(ctx,{id})=>{
