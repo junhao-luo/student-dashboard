@@ -4,6 +4,8 @@ Updated 2026-10-10. Target: https://eljhon.me/student-dashboard. The user explic
 
 ## Latest protected preview setup
 
+Security update: tested protections and mandatory Vercel/GitHub checks published as 4a7b1d3. GitHub CI 38028941405 passes (29s); Vercel Preview BsgNrer5KZFDpAYiXxvUCF81Avci is Ready (23s) at https://coursedock-gsjyif3gr-junhao-luos-projects.vercel.app/student-dashboard/. Backend record caps and UTF-8 snapshot byte limits are installed on development. Production builds now require a scoped Convex deploy key and coupled deploy command; key configuration remains pending. See docs/Security-review.md for all S01–S24 evidence and remaining blockers. The public domain path is not released.
+
 Vercel project `junhao-luos-projects/coursedock` was created on Hobby and connected to `junhao-luo/student-dashboard`. GitHub repository access to both portfolio and student-dashboard was confirmed saved. Vercel Authentication is saved for All Deployments; project data use for model training is disabled. No bypass link or secret was created. The tested source was committed and pushed as `0e4e2c8` on `codex/beta-preview`, leaving main and the portfolio unchanged.
 
 Only Preview has the public Clerk development publishable key and friendly-reindeer-145 Convex URL. No production account migration or backend installation was performed. The beta branch CSP includes these exact development service origins alongside the prepared production origins; remove development origins before public production release. This is a protected pre-production test, not the public student-data launch. Use synthetic study data; private cloud files, deletion, reminders and remaining security checks are still unfinished.

@@ -15,6 +15,7 @@ import type * as courses from "../courses.js";
 import type * as meetings from "../meetings.js";
 import type * as model from "../model.js";
 import type * as profiles from "../profiles.js";
+import type * as support from "../support.js";
 import type * as tasks from "../tasks.js";
 
 import type {
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   meetings: typeof meetings;
   model: typeof model;
   profiles: typeof profiles;
+  support: typeof support;
   tasks: typeof tasks;
 }>;
 

@@ -1,5 +1,7 @@
 # Design
 
+Support addition, 2026-10-10: a compact Contact support row above the profile opens a readable form using the shared category dropdown. Keep collapsed navigation icon-only. A fixed green circular bug button respects safe-area spacing and hides behind the open mobile drawer. Its keyboard-dismissable, independently scrollable dialog explains the screenshot/privacy boundary, previews the PNG, permits screenshot/log removal, and preserves failed drafts. Use English/Traditional Chinese and semantic dark/light tokens. Exclude nested dialog scrolling from Lenis.
+
 Production preparation, 2026-10-10: preserve the existing hero/account layout and remembered language/theme at /student-dashboard. Navigation, signup, profile completion and logout must stay beneath that prefix. Legal contact is support@eljhon.me, operated by Eljhon Steve (羅俊豪). Keep visible notices accurate about device-local notes/files and unfinished reminders/deletion until those capabilities are completed.
 
 Updated: 2026-10-10, Asia/Taipei. Latest user references and accepted interactions govern this specification.

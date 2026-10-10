@@ -1,5 +1,7 @@
 # Architecture
 
+Support addition, 2026-10-10: src/Support.tsx provides ContactPage and BugReporter; src/support-data.ts validates bounded submissions and records safe in-memory diagnostic categories. convex/support.ts is the authenticated, profile-gated Resend action, with exact validators, shared write limits, separate transactional daily/monthly supportBudgets and a fixed recipient. RESEND_API_KEY exists only in the Convex server environment. No report content or screenshot is stored in Convex. See docs/Support-setup.md for privacy, retry and sender details.
+
 Latest hosting state, 2026-10-10: Vercel Hobby project coursedock is connected to student-dashboard. The codex/beta-preview branch uses development Clerk/Convex public identifiers in Preview only, with All Deployments authentication protection. Main remains the production tracking branch; no production environment values or backend migration were installed. The verified preview preserves /student-dashboard/ routes. Portfolio proxy routing is still pending; detailed build/login evidence is in docs/Beta-deployment.md.
 
 Updated: 2026-10-10, Asia/Taipei. Current local implementation and intended account architecture are distinguished below.

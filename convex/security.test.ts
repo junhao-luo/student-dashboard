@@ -19,6 +19,7 @@ test('every public business endpoint denies anonymous identity and exhausted sha
  const taskId=await a.action(ref('tasks:save'),{task}),meetingId=await a.action(ref('meetings:save'),{meeting});
  const endpoints:[string,Record<string,unknown>][]=[
   ['profiles:get',{}],['profiles:save',{profile}],['academic:get',{}],['academic:save',{revision:0,requestId:'budget',data:academic}],
+  ['support:submit',{kind:'suggestion',subject:'Test',message:'Synthetic report message',requestId:'12345678-1234-1234-1234-123456789abc',screenshot:null,diagnostics:null}],
   ['courses:list',{semester:'115-1',limit:1}],['courses:save',{course}],['courses:deleteCourse',{id:courseId}],
   ['tasks:list',{courseId,cursor:null,limit:1}],['tasks:save',{task}],['tasks:deleteTask',{id:taskId}],
   ['meetings:list',{courseId,cursor:null,limit:1}],['meetings:save',{meeting}],['meetings:deleteMeeting',{id:meetingId}],

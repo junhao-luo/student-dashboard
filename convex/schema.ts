@@ -11,6 +11,7 @@ export const meetingFields={courseId:v.id('courses'),day:v.number(),start:v.stri
 export const profileValue=v.object(profileFields);
 export const courseValue=v.object(courseFields);
 export default defineSchema({
+  supportBudgets:defineTable({key:v.string(),day:v.string(),month:v.string(),daily:v.number(),monthly:v.number()}).index('by_key',['key']),
   academicWorkspaces:defineTable({owner:v.string(),revision:v.number(),requestId:v.string(),data:academicValue}).index('by_owner',['owner']),
   profiles:defineTable({owner:v.string(),...profileFields}).index('by_owner',['owner']),
   courses:defineTable({owner:v.string(),...courseFields}).index('by_owner_semester',['owner','semester']),

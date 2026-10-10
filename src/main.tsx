@@ -1,4 +1,5 @@
 import { DataExport } from "./DataExport";
+import {ContactPage,BugReporter} from './Support';
 import { TaskViews } from "./TaskViews";
 import type { Folder } from "./domain";
 import { LegalPages } from "./Legal";
@@ -18,6 +19,7 @@ import {
   Trash2,
   Menu,
   X,
+  Mail,
 } from "lucide-react";
 import {
   validateCourse,
@@ -512,6 +514,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
           {nav.map(([key, Icon, label]) => (key==='courses'||key==='resources') ? <Dropdown key={key} label={label} icon={<Icon size={19}/>} active={page===key}><button onClick={()=>{setPage(key);if(key==='courses')setSelectedCourse('');else setFolderId('');setMobileOpen(false);}}>{key==='courses'?t('All courses','所有課程'):t('All resources','所有資源')}</button><div className="nav-children">{key==='courses'?activeCourses.map(c=><details key={c.id}><summary><button onClick={e=>{e.preventDefault();const item=e.currentTarget.closest('details');if(item)item.open=!item.open;setSelectedCourse(c.id);setCourseTab('notes');setPage('courses');setMobileOpen(false);}}>{c.name}<span aria-hidden="true" className="menu-chevron">⌄</span></button></summary>{notes.filter(n=>n.courseId===c.id).map(n=><button className="tree-note" key={n.id} onClick={()=>{setSelectedCourse(c.id);setCourseTab('notes');setPage('courses');setMobileOpen(false);setTimeout(()=>document.getElementById('note-'+n.id)?.scrollIntoView({block:'center'}),0);}}>{n.title}</button>)}</details>):renderFolders('')}</div></Dropdown>:<button key={key} aria-current={page===key?'page':undefined} className={page===key?'active':''} onClick={()=>{setPage(key);setMobileOpen(false);}}><Icon size={19}/>{label}</button>)}
         </nav>
         <div className="sidebar-bottom">
+          <button className={page==='contact'?'active':''} aria-label={t('Contact support','聯絡客服')} onClick={()=>{setPage('contact');setMobileOpen(false);}}><Mail size={19}/><span>{t('Contact support','聯絡客服')}</span></button>
           <Suspense fallback={null}><AccountMenu zh={lang==='zh'} onEdit={()=>{setPage('settings');setMobileOpen(false);setTimeout(()=>document.querySelector('.student-profile input')?.scrollIntoView({block:'center'}),0);}}/></Suspense>
         </div>
       </aside>
@@ -547,9 +550,9 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
             <p className="eyebrow">
               {t("Semester", "學期")} {semester}
             </p>
-            <h1>{page==='courses'&&selectedCourse?courseFor(selectedCourse)?.name:nav.find((n) => n[0] === page)?.[2]}</h1>
+            <h1>{page==='contact'?t('Contact support','聯絡客服'):page==='courses'&&selectedCourse?courseFor(selectedCourse)?.name:nav.find((n) => n[0] === page)?.[2]}</h1>
           </div>
-          {page !== "settings" && page !== "calendar" && (
+          {page !== "contact" && page !== "settings" && page !== "calendar" && (
             <button
               className="primary"
               onClick={() =>
@@ -913,7 +916,9 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
             <DataExport zh={lang==='zh'} workspace={{version:1,appName,selectedCourse,lang,dark,page,semester,semesters,courses,tasks,meetings,notes,resources,folders,folderId,courseTab,sidebarCollapsed}}/>
           </section>
         )}
+      {page==='contact'&&<ContactPage zh={lang==='zh'}/>}
       <LegalPages zh={lang === "zh"} name={appName || "CourseDock"}/></main>
+      <BugReporter zh={lang==='zh'} view={page}/>
       {form && (
         <Modal
           title={

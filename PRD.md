@@ -1,5 +1,7 @@
 # Product requirements
 
+Contact/report addition, 2026-10-10: signed-in users can submit complaints or suggestions to support@eljhon.me from Contact support. A floating beta bug button captures the visible workspace panel and bounded diagnostic log, requires review, permits removing either attachment, and sends to the same address. Support replies use the derived school email. Screenshots can include visible academic content; no report is sent just by opening the dialog. Details and deployment evidence: docs/Support-setup.md.
+
 Updated: 2026-10-10, Asia/Taipei. This is the current specification; it replaces earlier discovery drafts.
 
 Latest deployment request: the user authorized preparing and publishing a beta at https://eljhon.me/student-dashboard. The portfolio already uses Vercel at the domain root. Public support/privacy contact is support@eljhon.me; operator is Eljhon Steve (羅俊豪). Keep the initial five-user scope and mandatory security evidence. A beta label does not waive private-data protections or unfinished acceptance requirements.

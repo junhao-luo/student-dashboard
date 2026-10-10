@@ -1,5 +1,7 @@
 # Rules
 
+Support/report controls, 2026-10-10: enforce server auth/profile checks, exact bounded payloads, fixed support recipient and server-derived reply address. Reject non-PNG/oversized screenshots and unexpected diagnostic fields. Reports use plain-text email, bounded safe diagnostics and review/removal before transfer; never record raw console output, tokens, profile values or full URLs in diagnostics. Keep the sender key server-only. Transactional report budgets must limit both per-user and global sends, including failures. Provider acceptance is not inbox-delivery proof. Details: docs/Support-setup.md.
+
 Updated: 2026-10-10, Asia/Taipei. Current development and release constraints.
 
 Latest authorization: the user explicitly requested a beta production deployment at https://eljhon.me/student-dashboard. Necessary CourseDock deployment and portfolio routing changes are now authorized. Provider access expansions and credential creation still follow browser confirmation/handoff policy. Existing security controls and evidence requirements remain mandatory; do not treat the word beta as an exception. Never expose client secrets in frontend configuration or transcripts.

@@ -7,8 +7,8 @@ import ts from 'typescript';
 const failures=new Set();
 const checked=new Set();
 const endpoints=[];
-const secretPatterns=[/\b(?:sk_live_|sk_test_)[A-Za-z0-9]{20,}/,/\bgh[pousr]_[A-Za-z0-9]{30,}/,/\bgithub_pat_[A-Za-z0-9_]{40,}/,/\bAKIA[A-Z0-9]{16}\b/,/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/];
-const gitPattern='(sk_live_|sk_test_)[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|AKIA[A-Z0-9]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----';
+const secretPatterns=[/\b(?:sk_live_|sk_test_)[A-Za-z0-9]{20,}/,/\bre_[A-Za-z0-9_]{24,}/,/\bgh[pousr]_[A-Za-z0-9]{30,}/,/\bgithub_pat_[A-Za-z0-9_]{40,}/,/\bAKIA[A-Z0-9]{16}\b/,/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/];
+const gitPattern='(sk_live_|sk_test_)[A-Za-z0-9]{20,}|(^|[^[:alnum:]_])re_[A-Za-z0-9_]{24,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|AKIA[A-Z0-9]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----';
 function scanGit(revision){
  try{
   const matches=execFileSync('git',['grep','-I','-l','-E','-e',gitPattern,...(revision?[revision]:[])],{encoding:'utf8'});
