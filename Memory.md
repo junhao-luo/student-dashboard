@@ -1,6 +1,16 @@
 # Memory
 
+## Reporter details in support email — 2026-10-10
+
+Applied project-local Ponytail and security-review to the requested support-email expansion. Reused authenticated private profile lookup and existing attachments. Complaints, suggestions and bugs now include six allowlisted server profile fields: name, student ID, department/program, class, derived school email and mobile. Bug diagnostics appear inline and in diagnostics.txt; retained screenshot remains workspace.png. EN/ZH form disclosures and privacy copy updated. Clients cannot override identity/profile. No new real student-data email sent for this change.
+
+Verification: 17 frontend +20 server/client tests pass; full build:hosting, backend/frontend type checks, dependency audit and post-bundle/static scan pass. Added synthetic two-user test covers both contact categories, bug body and exact PNG/log attachment content. Development backend installed at 14:34:52. Local browser confirms both expanded disclosures and retained screenshot/log review controls; no email submitted. Proof .playwright-cli/support-profile-review.jpg. Protected preview readback pending.
+
+Live support email verification, 2026-10-10: user explicitly requested the previously prepared live email test, resolving its payload approval. Sent one labelled bug report through the actual signed-in app/Convex/Resend path, including the blank Contact-page PNG and bounded diagnostic log. The form reports submission and clears the draft; Resend email 01a1247f-0137-7b9b-8c86-9528cf2ed189 shows Delivered to support@eljhon.me. No credentials were inspected, no real academic record content included and no second test sent. Proof .playwright-cli/support-email-delivered.jpg. Delivery means recipient-server acceptance; human inbox/opening and future reminders remain unverified. Documentation updated locally; no code change or redeployment required.
+
 ## Contact and beta reports — 2026-10-10
+
+Remote evidence: commit 0837dfcbf56bf457b87bdce3619704e717334cd7 pushed to codex/beta-preview. GitHub security workflow 38030086443 completed successfully in 24s. Vercel Preview CQstRiyAFRTdtAGzFN7D22fcvLKx Ready in 27s; stable branch alias verified in Deployment Details. Proof .playwright-cli/support-vercel-ready.jpg. Main/public domain unchanged; no production backend deployment. Readback documentation updated locally after push to avoid a redundant rebuild.
 
 Final local checks: full build:hosting passed, including all 36 tests, server/frontend type checks, audit and post-bundle scan. Expanded credential scans to Resend key patterns with word boundaries; an initial Git pattern matched a long vendored identifier and was corrected without excluding files. Ten reachable commits scan clean. Graphify source-only refresh: 187 nodes/534 edges, five CSS files unsupported. SlopMonster visible-copy checker: 5/5 CLEAN; manual factual review, second-model pass unavailable. English and Traditional Chinese/dark dialog reviewed; no overflow at exact 390×600. Screenshots and temporary harness/logs remain ignored.
 

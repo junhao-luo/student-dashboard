@@ -1,6 +1,12 @@
 # Contact and beta reports
 
+Reporter details update, 2026-10-10: every contact and bug email includes the authenticated reporter's saved name, student ID, department/program, class, derived school email and mobile number. These fields come from the server profile, never the submitted form. Bug emails attach workspace.png and diagnostics.txt when retained; the diagnostic JSON also appears inline. EN/ZH forms and privacy copy disclose this transfer. The diagnostic log itself still excludes profile values. All 37 tests and hosting build gates pass, including two-user/profile-tampering and exact attachment checks. The earlier live delivery test predates this expanded profile payload; no additional real profile email was sent for this update.
+
 Updated 2026-10-10, Asia/Taipei.
+
+Live email test completed after the user's explicit request: the signed-in local beta submitted a labelled bug report with the blank Contact-page screenshot and bounded diagnostics. The form confirmed submission and cleared the sent draft. Resend email 01a1247f-0137-7b9b-8c86-9528cf2ed189 shows Delivered to support@eljhon.me. Proof: .playwright-cli/support-email-delivered.jpg. This establishes recipient-mail-server acceptance, not that a person opened the message or that every future email will deliver. The earlier approval block below is historical and resolved for this test.
+
+Remote readback: 0837dfc pushed to codex/beta-preview. GitHub security run 38030086443 passed in 24s. Protected Vercel Preview CQstRiyAFRTdtAGzFN7D22fcvLKx Ready in 27s; stable branch alias https://coursedock-git-codex-beta-preview-junhao-luos-projects.vercel.app/student-dashboard/. No public-domain routing or production backend migration.
 
 Signed-in, profile-complete users open Contact support from the sidebar to send a complaint or suggestion. A floating circular bug button captures the current workspace panel and opens a review dialog. Users can remove the PNG screenshot and diagnostic log independently, then submit a description. Both forms send to support@eljhon.me through Resend. Replies use the server-derived school email, never a client-supplied recipient. Provider acceptance is shown as submission, not confirmed inbox delivery.
 

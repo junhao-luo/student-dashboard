@@ -1,5 +1,7 @@
 # Product requirements
 
+Support email update, 2026-10-10: complaints, suggestions and bug reports include the reporter's saved name, student ID, department/program, class, derived school email and mobile number. Bug emails attach the retained screenshot and diagnostics; diagnostics also appear in the email body. Reporters can still remove either attachment before submitting.
+
 Contact/report addition, 2026-10-10: signed-in users can submit complaints or suggestions to support@eljhon.me from Contact support. A floating beta bug button captures the visible workspace panel and bounded diagnostic log, requires review, permits removing either attachment, and sends to the same address. Support replies use the derived school email. Screenshots can include visible academic content; no report is sent just by opening the dialog. Details and deployment evidence: docs/Support-setup.md.
 
 Updated: 2026-10-10, Asia/Taipei. This is the current specification; it replaces earlier discovery drafts.

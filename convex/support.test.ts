@@ -15,10 +15,34 @@ test('support denies anonymous, missing profile, field tampering and unconfigure
   await expect(a.action(ref('support:submit'),report)).rejects.toThrow('PROFILE_REQUIRED');
   await a.action(ref('profiles:save'),{profile});
   await expect(a.action(ref('support:submit'),{...report,to:'attacker@example.com'})).rejects.toThrow();
+  await expect(a.action(ref('support:submit'),{...report,profile:{...profile,name:'Spoofed'}})).rejects.toThrow();
   await expect(a.action(ref('support:submit'),{...report,screenshot:'data:text/html;base64,AAAA'})).rejects.toThrow('INVALID_REPORT');
   vi.stubEnv('RESEND_API_KEY','');
   await expect(a.action(ref('support:submit'),report)).rejects.toThrow('SUPPORT_NOT_CONFIGURED');
  }finally{vi.unstubAllEnvs();}
+});
+test('each contact type includes the authenticated student and bug emails carry PNG and diagnostic attachments',async()=>{
+ const t=convexTest(schema,modules),a=t.withIdentity({subject:'A'}),b=t.withIdentity({subject:'B'});
+ await a.action(ref('profiles:save'),{profile});
+ const other={...profile,name:'Other Student',studentId:'D7654321',department:'Other Program',className:'B',phone:'0987654321'};
+ await b.action(ref('profiles:save'),{profile:other});
+ const fetcher=vi.fn().mockResolvedValue(new Response('{}',{status:200}));vi.stubGlobal('fetch',fetcher);vi.stubEnv('RESEND_API_KEY','test-placeholder');
+ try{
+  for(const kind of ['complaint','suggestion'])await a.action(ref('support:submit'),{...report,kind});
+  const screenshot='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=';
+  const diagnostics={view:'courses',language:'en',width:390,height:844,events:[{code:'CLIENT_ERROR',time:'2026-10-10T06:00:00.000Z'}]};
+  await b.action(ref('support:submit'),{...report,kind:'bug',screenshot,diagnostics});
+  for(const call of fetcher.mock.calls.slice(0,2)){
+   const mail=JSON.parse(call[1].body);
+   for(const value of [...Object.values(profile),'d1234567@o365.fcu.edu.tw'])expect(mail.text).toContain(value);
+   expect(mail.text).not.toContain(other.name);expect(mail.attachments).toEqual([]);
+  }
+  const bug=JSON.parse(fetcher.mock.calls[2][1].body);
+  for(const value of [...Object.values(other),'d7654321@o365.fcu.edu.tw'])expect(bug.text).toContain(value);
+  expect(bug.text).not.toContain(profile.studentId);expect(bug.text).toContain('CLIENT_ERROR');
+  expect(bug.attachments[0]).toEqual({filename:'workspace.png',content:screenshot.slice(22),content_type:'image/png'});
+  expect(JSON.parse(atob(bug.attachments[1].content))).toEqual(diagnostics);
+ }finally{vi.unstubAllGlobals();vi.unstubAllEnvs();}
 });
 test('support reserves concurrent quota, fixes destination/reply address, hides provider errors',async()=>{
  const t=convexTest(schema,modules),a=t.withIdentity({subject:'A'});await a.action(ref('profiles:save'),{profile});

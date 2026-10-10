@@ -1,5 +1,7 @@
 # Rules
 
+Support email update, 2026-10-10: include only the authenticated reporter's six saved student-profile fields in both contact and bug emails. Disclose this transfer in both forms and privacy copy. Never accept caller-supplied identity/profile fields or include another student's record. Profile details are separate from the bounded diagnostic log.
+
 Support/report controls, 2026-10-10: enforce server auth/profile checks, exact bounded payloads, fixed support recipient and server-derived reply address. Reject non-PNG/oversized screenshots and unexpected diagnostic fields. Reports use plain-text email, bounded safe diagnostics and review/removal before transfer; never record raw console output, tokens, profile values or full URLs in diagnostics. Keep the sender key server-only. Transactional report budgets must limit both per-user and global sends, including failures. Provider acceptance is not inbox-delivery proof. Details: docs/Support-setup.md.
 
 Updated: 2026-10-10, Asia/Taipei. Current development and release constraints.

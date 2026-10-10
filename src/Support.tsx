@@ -21,7 +21,7 @@ export function ContactPage({zh}:{zh:boolean}){
       <fieldset disabled={busy} onChange={()=>{request.current=null;setStatus('');}}><label>{zh?'類別':'Category'}<Select value={kind} onChange={e=>setKind(e.target.value as typeof kind)}><option value="suggestion">{zh?'建議':'Suggestion'}</option><option value="complaint">{zh?'申訴':'Complaint'}</option></Select></label>
       <label>{zh?'主旨':'Subject'}<input required maxLength={120} value={subject} onChange={e=>setSubject(e.target.value)}/></label>
       <label>{zh?'內容':'Message'}<textarea required minLength={10} maxLength={5000} rows={7} value={message} onChange={e=>setMessage(e.target.value)}/></label>
-      <p className="muted">{zh?'我們會收到你的內容與系統產生的學校信箱，供客服回覆。請勿提供密碼或驗證碼。':'We receive your message and generated school email for replies. Please leave out passwords and verification codes.'}</p>
+      <p className="muted">{zh?'內容與已儲存的姓名、學號、系所、班級、學校信箱及手機號碼將寄至 support@eljhon.me，供客服處理與回覆。請勿提供密碼或驗證碼。':'Your message and saved name, student ID, department, class, school email and mobile number are sent to support@eljhon.me for support. Please leave out passwords and verification codes.'}</p>
       <button className="primary" type="submit">{busy?(zh?'傳送中…':'Sending…'):(zh?'傳送給客服':'Send to support')}</button></fieldset><p role="status">{status}</p>
     </form></section>;
 }
@@ -50,7 +50,7 @@ export function BugReporter({zh,view}:{zh:boolean;view:string}){
         {capture&&<p role="status">{zh?'擷取畫面中…':'Capturing workspace…'}</p>}
         {screenshot&&<div className="screenshot-review"><img src={screenshot} alt={zh?'將傳送的工作區截圖':'Workspace screenshot to be sent'}/><button type="button" onClick={()=>{setScreenshot(null);request.current=null;}}>{zh?'移除截圖':'Remove screenshot'}</button></div>}
         {diagnostics&&<details><summary>{zh?'檢視診斷記錄':'Review diagnostic log'}</summary><pre>{JSON.stringify(diagnostics,null,2)}</pre><button type="button" onClick={()=>{setDiagnostics(null);request.current=null;}}>{zh?'移除診斷':'Remove diagnostics'}</button></details>}
-        <p className="muted">{zh?'內容、保留的截圖／診斷與學校信箱將寄至 support@eljhon.me。未收集密碼、權杖或原始主控台記錄。':'Your description, retained screenshot/diagnostics, and school email go to support@eljhon.me. Passwords, tokens, and raw console logs are not collected.'}</p><button className="primary" type="submit">{busy?(zh?'傳送中…':'Sending…'):(zh?'傳送回報':'Send report')}</button></fieldset><p role="status">{status}</p>
+        <p className="muted">{zh?'內容、保留的截圖／診斷與已儲存的姓名、學號、系所、班級、學校信箱及手機號碼將寄至 support@eljhon.me。未收集密碼、權杖或原始主控台記錄。':'Your description, retained screenshot/diagnostics, and saved name, student ID, department, class, school email and mobile number go to support@eljhon.me. Passwords, tokens, and raw console logs are not collected.'}</p><button className="primary" type="submit">{busy?(zh?'傳送中…':'Sending…'):(zh?'傳送回報':'Send report')}</button></fieldset><p role="status">{status}</p>
       </form></dialog>}
   </>;
 }
