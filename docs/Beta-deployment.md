@@ -2,6 +2,14 @@
 
 Updated 2026-10-10. Target: https://eljhon.me/student-dashboard. The user explicitly authorized this beta deployment. The root portfolio already runs on Vercel project `junhao-luo`.
 
+## Latest protected preview setup
+
+Vercel project `junhao-luos-projects/coursedock` was created on Hobby and connected to `junhao-luo/student-dashboard`. GitHub repository access to both portfolio and student-dashboard was confirmed saved. Vercel Authentication is saved for All Deployments; project data use for model training is disabled. No bypass link or secret was created. The tested source was committed and pushed as `0e4e2c8` on `codex/beta-preview`, leaving main and the portfolio unchanged.
+
+Only Preview has the public Clerk development publishable key and friendly-reindeer-145 Convex URL. No production account migration or backend installation was performed. The beta branch CSP includes these exact development service origins alongside the prepared production origins; remove development origins before public production release. This is a protected pre-production test, not the public student-data launch. Use synthetic study data; private cloud files, deletion, reminders and remaining security checks are still unfinished.
+
+Source/build and all six locally reachable history commits were scanned for known credential patterns without matches; staged source was checked separately. This is a pattern scan, not an assurance that every possible secret format is detected. Current npm audit has zero vulnerabilities; 15 frontend and 13 backend tests pass. Vercel build/live-route/session results will be recorded after verification.
+
 ## Configured and verified
 
 - Clerk production instance: `ins_3KUL5t6nQ81c6DVQamuN4h3k56i`, in the existing CourseDock app.
@@ -14,9 +22,9 @@ Updated 2026-10-10. Target: https://eljhon.me/student-dashboard. The user explic
 - 15 frontend tests and 13 backend tests pass. Production build passes. npm audit reports zero vulnerabilities. A known-pattern scan of source/backend/build reports no secret candidates; this is not a complete history scan.
 - Support/privacy contact: `support@eljhon.me`, operator Eljhon Steve (羅俊豪). Legal preview now identifies this contact and retains accurate unfinished-deletion/local-storage notices.
 
-## Vercel setup still pending
+## Vercel setup and remaining public routing
 
-Vercel's GitHub installation currently has saved access only to `junhao-luo/junhao-luo`. The permission form is prepared with `junhao-luo/student-dashboard` also selected, but Save has not been clicked: user approval is pending. Chrome automation subsequently reported that its ChatGPT extension needs an update. No CourseDock source push or public frontend deployment has occurred.
+Vercel's GitHub installation has saved access to both repositories. The CourseDock project is connected and the beta branch is pushed. The first manually requested preview built successfully in 28 seconds, but Vercel classified it as Production; that build has no production environment values and remains protected. Production branch tracking is confirmed as `main`. A subsequent branch push will be checked for a true Preview build using its development configuration.
 
 After approval and browser recovery, create a separate CourseDock Vercel project, using Vite, `npm run build`, and `dist`. Production frontend environment needs only the production Clerk publishable key and `VITE_CONVEX_URL=https://cheery-dachshund-214.convex.cloud`. Never add Clerk client secrets, Clerk secret API keys, Convex deployment keys or Resend secrets to `VITE_*` variables.
 
