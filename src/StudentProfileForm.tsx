@@ -15,7 +15,7 @@ export function StudentProfileForm({zh,profile,onSave}:{zh:boolean;profile:Stude
     const input={name:String(data.get('name')??''),studentId:String(data.get('studentId')??''),department:department===CUSTOM?String(data.get('customDepartment')??''):department,className:String(data.get('className')??''),phone:String(data.get('phone')??'')};
     const normalized=normalizeStudentProfile(input);
     setError('');setSaved(false);
-    if(!normalized){setError(zh?'請填寫所有資料。手機號碼格式為 09xxxxxxxx 或 +8869xxxxxxxx。':'Complete every field. Use 09xxxxxxxx or +8869xxxxxxxx for your mobile number.');return;}
+    if(!normalized){setError(zh?'請填寫所有資料。學號須為 D、M 或 P 加上 7 位數字；手機號碼格式為 09xxxxxxxx 或 +8869xxxxxxxx。':'Complete every field. Student ID must be D, M or P followed by 7 digits. Use 09xxxxxxxx or +8869xxxxxxxx for your mobile number.');return;}
     setBusy(true);
     const {schoolEmail:_,...value}=normalized;
     try{await onSave(value);setSaved(true);}catch{setError(zh?'無法儲存。請檢查資料與連線，稍後再試。':'Could not save. Check the fields and connection, then try again.');}finally{setBusy(false);}
@@ -24,7 +24,7 @@ export function StudentProfileForm({zh,profile,onSave}:{zh:boolean;profile:Stude
     {!profile&&<p>{zh?'所有註冊方式都需完成以下資料，才能開啟工作區。':'Complete your student details to open the workspace, whichever sign-up method you used.'}</p>}
     <fieldset className="profile-fields" disabled={busy}>
       <label>{zh?'姓名':'Name'}<input name="name" defaultValue={profile?.name??''} required maxLength={120} autoComplete="name"/></label>
-      <div className="profile-field"><label>{zh?'學號':'Student ID'}<input name="studentId" defaultValue={profile?.studentId??''} required maxLength={30} pattern="[A-Za-z0-9_]{1,30}" autoComplete="off" aria-describedby="school-email-hint"/></label><small id="school-email-hint" className="muted">{zh?'學校信箱自動使用：學號@o365.fcu.edu.tw':'School email is generated as studentID@o365.fcu.edu.tw.'}</small></div>
+      <div className="profile-field"><label>{zh?'學號':'Student ID'}<input name="studentId" defaultValue={profile?.studentId??''} required minLength={8} maxLength={8} pattern="[DMP][0-9]{7}" autoComplete="off" autoCapitalize="characters" spellCheck={false} title={zh?'D、M 或 P 加上 7 位數字。':'D, M or P followed by 7 digits.'} aria-describedby="school-email-hint"/></label><small id="school-email-hint" className="muted">{zh?'學校信箱自動使用：學號@o365.fcu.edu.tw':'School email is generated as studentID@o365.fcu.edu.tw.'}</small></div>
       <div className="department-field">
         <label>{zh?'系所 / 學程':'Department / program'}<Select aria-label={zh?'系所 / 學程':'Department / program'} aria-required="true" name="department" value={department} onChange={e=>setDepartment(e.target.value)} search={{label:zh?'搜尋系所或學程':'Search departments or programs',placeholder:zh?'輸入名稱關鍵字':'Search by the official Chinese name',empty:zh?'找不到符合的學程，可新增自訂學程。':'No matching program. You can add a custom program.',alwaysVisible:[CUSTOM]}}><option value="" disabled>{zh?'選擇系所或學程':'Choose a department or program'}</option>{programs.map(name=><option key={name} value={name}>{name}</option>)}<option value={CUSTOM}>{zh?'新增自訂學程':'Add custom program'}</option></Select></label>
         {department===CUSTOM&&<label>{zh?'自行輸入系所 / 學程':'Custom department / program'}<input name="customDepartment" required maxLength={120} defaultValue={profile&&!programs.includes(profile.department)?profile.department:''} autoComplete="off"/></label>}

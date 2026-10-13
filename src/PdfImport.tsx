@@ -7,9 +7,11 @@ import { parseTimetable, type ImportedMeeting } from "./pdf-parser";
 GlobalWorkerOptions.workerSrc = workerUrl;
 export function PdfImport({
   zh,
+  hasExistingTimetable,
   onSave,
 }: {
   zh: boolean;
+  hasExistingTimetable: boolean;
   onSave: (rows: ImportedMeeting[], replace: boolean) => void;
 }) {
   const [rows, setRows] = useState<ImportedMeeting[]>([]);
@@ -123,7 +125,7 @@ export function PdfImport({
             )}
           </p>
           <ImportedTimetable rows={rows} onChange={setRows} zh={zh}/>
-          <label>
+          {hasExistingTimetable&&<><label>
             {t("Import mode", "匯入方式")}
             <Select
               value={replace ? "replace" : "merge"}
@@ -147,14 +149,14 @@ export function PdfImport({
                   "Exact duplicates are skipped. Different times or rooms are kept for you to review.",
                   "略過完全相同的時段。不同時間或教室會保留，供你確認。",
                 )}
-          </p>
+          </p></>}
           <button
             className="primary"
             disabled={rows.some(
               (row) => !row.name.trim() || !row.start || !row.end || row.start >= row.end,
             )}
             onClick={() => {
-              onSave(rows, replace);
+              onSave(rows, hasExistingTimetable&&replace);
               setRows([]);
               setPreview("");
             }}

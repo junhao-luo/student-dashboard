@@ -52,3 +52,11 @@ Local rich editor, note imports/attachments and ZIP export are implemented. Mark
 The user's Easlo and public Notion references inform workflows; their notebooks database is excluded. User screenshots guide visuals. The six-file guide determined this document set, not product features.
 
 [PRD](PRD.md) · [Architecture](Architecture.md) · [Rules](Rules.md) · [Phases](Phases.md) · [Design](Design.md) · [Memory](Memory.md)
+
+## Student ID format — 2026-10-13
+
+Student IDs must be uppercase D, M or P followed by exactly seven ASCII digits. Applies to sign-up profile completion and profile edits; school email remains generated automatically. Do not display the degree-prefix background explanation.
+
+## Empty timetable import — 2026-10-13
+
+If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.

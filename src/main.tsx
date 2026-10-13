@@ -828,7 +828,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
             <Suspense
               fallback={<LoadingState compact zh={lang === "zh"} />}
             >
-              <PdfImport zh={lang === "zh"} onSave={importSchedule} />
+              <PdfImport zh={lang === "zh"} hasExistingTimetable={activeMeetings.length>0} onSave={importSchedule} />
             </Suspense>
           </section>
         )}

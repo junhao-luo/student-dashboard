@@ -73,3 +73,11 @@ Never accept schoolEmail as a profile input: derive it server-side from studentI
 ## Academic sync controls and hosting update, 2026-10-10
 
 Vercel supersedes the earlier frontend host. No push/public deployment is implied by the hosting-target change. Keep Convex/Clerk secrets server-side and use production configuration only when released. For academic snapshots: derive ownership, require profile, reject unexpected fields/orphan links/duplicates and oversized data; reject stale revisions atomically. Import only after review and confirmation. Do not silently overwrite a conflict or auto-upload legacy notes/files. Mock/browser evidence is not proof of real two-user token isolation or deployed headers.
+
+## Student ID format — 2026-10-13
+
+Reject profile saves with student IDs outside uppercase D/M/P plus seven ASCII digits, including lowercase, unsupported prefixes, separators and full-width digits. Failed writes preserve the stored profile; school-email derivation and owner isolation remain unchanged.
+
+## Empty timetable import — 2026-10-13
+
+If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
