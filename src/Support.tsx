@@ -32,7 +32,7 @@ export function BugReporter({zh,view}:{zh:boolean;view:string}){
   useEffect(()=>{if(open){dialog.current?.showModal();dialog.current?.querySelector('input')?.focus();}else trigger.current?.focus();},[open]);
   useEffect(()=>{if(open&&!capture&&document.activeElement===dialog.current)dialog.current?.querySelector('input')?.focus();},[open,capture]);
   async function report(){
-    if(capture)return;setOpen(true);setCapture(true);setStatus('');setScreenshot(null);request.current=null;
+    if(capture)return;setCapture(true);setStatus('');setScreenshot(null);request.current=null;
     try{
       const {toPng}=await import('html-to-image');
       const node=document.getElementById('main');if(!node)throw Error('capture');
@@ -40,9 +40,9 @@ export function BugReporter({zh,view}:{zh:boolean;view:string}){
       const image=await toPng(node,{width,height,pixelRatio:1,skipFonts:true,fetchRequestInit:{signal:AbortSignal.timeout(8000)},backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--surface').trim()||'#ffffff',style:{width:`${width}px`,height:`${height+top}px`,transform:`translateY(-${top}px)`,margin:'0'},filter:n=>!(n instanceof Element)||!n.matches('input,textarea,select,img,iframe,video,canvas,[data-report-private],.student-profile')});
       if(image.length>750000)throw Error('size');setScreenshot(image);
     }catch{recordDiagnostic('CAPTURE_FAILED');setStatus(zh?'無法擷取畫面，你仍可提交問題描述與診斷。':'Screenshot unavailable. You can still send the description and diagnostics.');}
-    finally{setDiagnostics({view:['overview','courses','tasks','timetable','resources','calendar','settings','contact'].includes(view)?view:'overview',language:zh?'zh':'en',width:Math.min(innerWidth,10000),height:Math.min(innerHeight,10000),events:diagnosticEvents()});setCapture(false);}
+    finally{setDiagnostics({view:['overview','courses','tasks','timetable','resources','calendar','settings','contact'].includes(view)?view:'overview',language:zh?'zh':'en',width:Math.min(innerWidth,10000),height:Math.min(innerHeight,10000),events:diagnosticEvents()});setCapture(false);setOpen(true);}
   }
-  return <><button ref={trigger} className="bug-fab" data-report-private aria-label={zh?'回報錯誤':'Report a bug'} title={zh?'回報錯誤':'Report a bug'} onClick={report}><Bug size={22}/></button>
+  return <><button ref={trigger} className="bug-fab" data-report-private disabled={capture||busy} aria-label={capture?(zh?'擷取工作區中…':'Capturing workspace…'):(zh?'回報錯誤':'Report a bug')} title={zh?'回報錯誤':'Report a bug'} onClick={report}><Bug size={22}/></button>{capture&&<span className="visually-hidden" role="status" data-report-private>{zh?'擷取工作區中…':'Capturing workspace…'}</span>}
     {open&&<dialog ref={dialog} className="bug-dialog" aria-labelledby="bug-report-title" data-lenis-prevent data-report-private onCancel={e=>{if(busy||capture)e.preventDefault();else setOpen(false);}}><div className="support-dialog-heading"><h2 id="bug-report-title">{zh?'回報 Beta 問題':'Report a beta bug'}</h2><button disabled={busy||capture} aria-label={zh?'關閉':'Close'} onClick={()=>setOpen(false)}><X size={20}/></button></div>
       <p>{zh?'描述發生的情況，以及原本預期的結果。送出前請檢查截圖，可能包含課程或筆記。':'Describe what happened and what you expected. Review the screenshot before sending; it may contain courses or notes.'}</p>
       <form className="support-form" onSubmit={async e=>{e.preventDefault();if(busy||capture)return;request.current??=crypto.randomUUID();const report:SupportReport={kind:'bug',subject,message,screenshot,diagnostics,requestId:request.current};if(!validReport(report)){setStatus(zh?'請檢查內容，描述至少需要 10 個字元。':'Check your report. The description needs at least 10 characters.');return;}setBusy(true);setStatus('');try{await send(report);setScreenshot(null);setSubject('');setMessage('');setDiagnostics(null);request.current=null;setStatus(zh?'已提交給郵件服務。感謝你的回報。':'Submitted to the email service. Thank you for the report.');}catch(error){setStatus(failure(error,zh));}finally{setBusy(false);}}}>

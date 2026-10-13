@@ -270,10 +270,11 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
           kind: value("kind") === "exam" ? "exam" : "assignment",
           due: taiwanDate(value("due"))!,
           done: form==='edit-task' ? editingTask?.done ?? false : false,
-          reminderDays: form==='edit-task' ? editingTask?.reminderDays ?? null : null,
+          reminderDays: data.get('reminder')==='on' ? (value('reminderDays')==='' ? NaN : Number(value('reminderDays'))) : null,
       };
       const due=taiwanDate(value('due'));
       if(!due){setError(t('Enter a valid due date.','請輸入有效截止日期。'));return;}
+      if(task.reminderDays!==null&&(!Number.isInteger(task.reminderDays)||task.reminderDays<0||task.reminderDays>365)){setError(t('Choose a reminder between 0 and 365 whole days before the deadline.','提醒須設定為截止前 0 至 365 個整天。'));return;}
       task.due=due;
       setTasks(form==='edit-task'?tasks.map(item=>item.id===editingId?task:item):[...tasks,task]);
     } else if ((form === "meeting" || form === "edit-meeting")) {
@@ -989,6 +990,9 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                   {t("Due date & time (Taiwan)", "截止日期與時間（台灣）")}
                   <input name="due" type="datetime-local" required defaultValue={form==='edit-task'&&editingTask?new Date(new Date(editingTask.due).getTime()+8*60*60*1000).toISOString().slice(0,16):''}/>
                 </label>
+                <label className="reminder-option"><input name="reminder" type="checkbox" defaultChecked={form==='edit-task'&&editingTask?.reminderDays!==null}/>{t('Email a reminder to my school email','寄送提醒至我的學校信箱')}</label>
+                <label>{t('Days before the deadline','截止前幾天')}<input name="reminderDays" type="number" min={0} max={365} step={1} defaultValue={form==='edit-task'?editingTask?.reminderDays??1:1}/></label>
+                <p className="muted">{t('Opt in to receive email from reminder@eljhon.me. Default: 1 day before; 0 means at the deadline. Save and sync this task to schedule it. Completing, deleting or disabling it cancels pending mail after syncing. Beta delivery is best effort and subject to send limits.','勾選後，會收到 reminder@eljhon.me 寄出的郵件。預設提前 1 天；0 表示截止時間。儲存並同步後才會排程；完成、刪除或關閉提醒後，須同步才能取消待寄郵件。Beta 提醒可能延遲或因寄送上限而無法送達。')}</p>
               </>
             )}
             {(form === "meeting" || form === "edit-meeting") && (
