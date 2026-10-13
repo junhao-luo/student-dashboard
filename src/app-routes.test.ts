@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {appPath,routerPath} from './app-routes.ts';
+import {appPath,routerPath,isAccountPath} from './app-routes.ts';
 
 test('account routes retain subpath exactly once and preserve callback parameters',()=>{
   const base='/student-dashboard/';
@@ -13,4 +13,10 @@ test('account routes retain subpath exactly once and preserve callback parameter
   assert.throws(()=>routerPath(base,'https://evil.example/student-dashboard','https://eljhon.me'));
   assert.throws(()=>routerPath(base,'/student-dashboard-other','https://eljhon.me'));
   assert.throws(()=>routerPath(base,'/','https://eljhon.me'));
+});
+
+test('unknown workspace routes show 404 while managed authentication subroutes remain available',()=>{
+ for(const path of ['/','/dashboard','/onboarding','/sign-in','/sign-up','/sign-in/factor-one','/sign-up/verify-email-address'])assert.equal(isAccountPath(path),true);
+ for(const path of ['/missing','/dashboard/missing','/sign-in-other','/sign-up-other'])assert.equal(isAccountPath(path),false);
+ assert.equal(appPath('/student-dashboard/','/'),'/student-dashboard/');
 });

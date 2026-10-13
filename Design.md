@@ -1,5 +1,7 @@
 # Design
 
+Landing routing, 2026-10-13: signed-out visitors see the existing hero/sign-in layout directly at /student-dashboard/. Root authentication uses Clerk hash routing so authentication steps stay on the root page; legacy /sign-in links still work. Unknown app paths render a bilingual 404 with the remembered language/theme and a recovery link to home or the workspace. Clerk owns its nested sign-in/sign-up callback routes.
+
 Beta follow-up, 2026-10-13: footer credits Eljhon Satsat / 羅俊豪 and describes possible beta issues in the selected language. Task forms use an explicit email-reminder checkbox plus a days-before input defaulting to 1, with a notice that saving and syncing is required. Capture the workspace first, then show the report form with its retained screenshot preview. Keep removal/review controls and the private-data disclosure.
 
 Timetable import review, 2026-10-13: render the draft as weekday columns with time-positioned class blocks and the 14 FCU period labels. Selecting a block opens a focused editor for course, teacher, room, day and times; edits update the draft immediately. Weekend columns appear when needed. Overlapping meetings use separate lanes, and an expandable full list keeps every meeting accessible. On narrow screens only the timetable scrolls horizontally; form fields stack. Saving still requires valid names/times and an explicit merge/replace selection.

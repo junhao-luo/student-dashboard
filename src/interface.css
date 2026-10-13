@@ -308,3 +308,6 @@ h1 {font-size:30px;letter-spacing:-.8px;}
 .reminder-option{display:flex;align-items:center;gap:10px;}
 .reminder-option input[type=checkbox]{width:20px;min-height:20px;margin:0;flex:none;}
 .legal-footer p{font-size:12px;max-width:640px;line-height:1.6;margin:8px 0;}
+.not-found{padding:32px 0;max-width:520px;}
+.not-found .eyebrow{font-size:48px;color:var(--accent);margin:0 0 16px;}
+.not-found-home{display:inline-flex;align-items:center;margin-top:20px;padding:12px 20px;min-height:44px;border-radius:10px;background:var(--accent);color:var(--surface);text-decoration:none;font-weight:600;}

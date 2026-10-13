@@ -1,6 +1,12 @@
 # Memory
 
+## Root hero and custom 404 follow-up — 2026-10-13
+
+User requested direct hero at /student-dashboard and a custom missing-page screen during the approved release. Applied existing account components and official Clerk hash-routing guidance for the root sign-in form; signup/legacy auth paths retain their existing path routing. Signup/sign-out now link back to the root. Unknown app paths show localized 404/recovery with current preferences; managed authentication child paths remain delegated to Clerk. Added route regression test; full hosting build passes with 19 frontend and 25 server/client tests, audit/type checks and scanner. Local browser confirms 404 and workspace recovery. Root signed-out hosted verification pending; no real login/logout or student records changed for this follow-up.
+
 ## Footer, workspace capture and task reminders — 2026-10-13
+
+Remote follow-up: 57c747cdbc1307685755666988ef23e5b15706fc pushed on codex/timetable-import-review; PR #6 opened/attached. GitHub Security and quality run 38335228110 succeeded; Vercel Preview HvXT3ciemwhJCxkmgjZ7WQ9nuSyN succeeded. Development Convex installed functions/indexes at 10:06:02 Taipei. Main merge was blocked by automatic approval review, which limited previous approval to f7e69c2 and demanded exact approval for this materially different release. No bypass attempted; requested explicit PR #6 production approval. Production unchanged; no live reminder emails sent. Readback retained locally to avoid another preview build.
 
 User requested bilingual creator credit (Eljhon Satsat / 羅俊豪), visible beta disclaimer, screenshot of workspace before report UI, assignment/exam reminders from reminder@eljhon.me, and publication to the public beta. Applied project-local Ponytail, backend-patterns and security-review. Captures now finish before the dialog opens; existing private-element filtering/review/removal remains. Browser fixture confirms captured image shows the synthetic workspace, with no report form, and both footer languages. Proof .playwright-cli/workspace-bug-preview.png. No report or live reminder email was submitted during this UI check.
 
