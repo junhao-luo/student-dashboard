@@ -93,3 +93,7 @@ Do not stage/reset/delete: AGENTS.md, docs/Beta-deployment.md, deleted edit-main
 ## Skills used
 
 Project-local Ponytail, incremental-implementation, frontend-ui-engineering, security-review, Playwright CLI; Graphify attempted but graph absent. Existing design/system controls were reused; no new package added. Official fflate archive documentation reviewed: https://github.com/101arrowz/fflate.
+
+## Settings About — 2026-10-13
+
+Added AboutSystem beneath export in Settings: package.json version is injected by Vite as __APP_VERSION__, with beta notice and dated collapsible bilingual changelog. No arbitrary version bump or dependency added. Frontend type/build passed; browser verified English, Traditional Chinese/dark, keyboard summary expansion and 320px width. Proof .playwright-cli/settings-about.png. Existing dependency module-directive warnings remain; no backend or public deployment changed. Maintain the displayed version in package.json and changelog entries in src/AboutSystem.tsx.

@@ -1,4 +1,5 @@
 import { DataExport } from "./DataExport";
+import {AboutSystem} from './AboutSystem';
 import {ContactPage,BugReporter} from './Support';
 import {ClassNow} from './ClassNow';
 import {SmoothScroll} from './SmoothScroll';
@@ -856,6 +857,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
             </button>
             <Suspense fallback={<LoadingState compact zh={lang==='zh'}/>}><AccountPanel zh={lang==='zh'} dark={dark}/></Suspense>
             <DataExport zh={lang==='zh'} workspace={{version:1,appName,selectedCourse,lang,dark,page,semester,semesters,courses,tasks,meetings,notes,resources,folders,folderId,courseTab,sidebarCollapsed}}/>
+            <AboutSystem zh={lang==='zh'}/>
           </section>
         )}
       {page==='contact'&&<ContactPage zh={lang==='zh'}/>}
