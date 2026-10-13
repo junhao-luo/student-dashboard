@@ -167,6 +167,12 @@ test('course types and deadline details/status sync with bounded validation',asy
  expect((await a.action(ref('academic:get'),{})).data.tasks[0]).toMatchObject({status:'in_progress',description:'Homework details'});
  await expect(a.action(ref('academic:save'),{revision:1,requestId:'forged-status',data:{...data,tasks:[{...data.tasks[0],status:'complete'}]}})).rejects.toThrow('INVALID_ACADEMIC');
  await expect(a.action(ref('academic:save'),{revision:1,requestId:'local-files',data:{...data,tasks:[{...data.tasks[0],attachments:[]}]}})).rejects.toThrow();
+ const storedTasks=(await a.action(ref('tasks:list'),{courseId,cursor:null,limit:50})).items;
+ await a.action(ref('tasks:save'),{id:storedTasks[0].id,task:{courseId,title:'Legacy edit',kind:'assignment',due:task.due,done:true,reminderDays:null}});
+ const legacyTask=(await a.action(ref('tasks:list'),{courseId,cursor:null,limit:50})).items[0];
+ expect(legacyTask).not.toHaveProperty('status');expect(legacyTask).not.toHaveProperty('description');expect(legacyTask.done).toBe(true);
+ await a.action(ref('courses:save'),{id:courseId,course});
+ expect((await a.action(ref('courses:list'),{semester:'115-1',limit:50}))[0]).not.toHaveProperty('courseType');
 });
 test('read and write budgets are per verified identity and reset after one minute',async()=>{
   vi.useFakeTimers({toFake:['Date']});

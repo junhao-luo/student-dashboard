@@ -1,3 +1,7 @@
+# Resume update — 2026-10-13
+
+The deferred checks below have now been performed. Cloud attachment retention, legacy field clearing, nested folder moves/deletion, downloads/renaming, Office slide order/images and XLSX values, error fallback, focus and 320–1440px/Chinese-dark layouts passed. Busy-operation/unmount guards and privacy copy were added. Work stays on the feature branch; public beta is unchanged. Office previews retain the documented content-layout limitation; physical Safari remains unverified. See Memory.md for final build/commit evidence. The earlier handoff below is retained as implementation history.
+
 # CourseDock handoff — 2026-10-13, Asia/Taipei
 
 ## Resume instruction

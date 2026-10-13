@@ -31,3 +31,15 @@ test('connection failure retains a recoverable pending request and the latest lo
  expect(calls).toBe(1);expect(academicData((await f.raw.loadWorkspace())!)).toEqual(academicData(newer));
  expect(f.getState()?.pending).toEqual(pending);
 });
+test('cloud reload preserves only matching local task attachments and attachment-only edits stay local',async()=>{
+ const f=fixture(),course={id:'course',semester:'115-1',name:'Study',code:'',instructor:'',credits:3,courseType:'required' as const,room:'',color:'blue'};
+ const task={id:'task',courseId:'course',title:'Study',kind:'assignment' as const,due:'2026-10-20T00:00:00.000Z',done:false,status:'in_progress' as const,description:'Cloud notes',reminderDays:null};
+ const attachment={fileId:'local-file',name:'handout.pdf',size:10};
+ await f.raw.saveWorkspace({...f.local,courses:[course],tasks:[{...task,description:'Old notes',attachments:[attachment]},{...task,id:'deleted-task',attachments:[attachment]}]});
+ const cloud={revision:2,data:{...emptyAcademic(),courses:[course],tasks:[task,{...task,id:'new-cloud-task'}]}};
+ let calls=0;const storage=synchronizedStorage(f.raw,{get:async()=>cloud,save:async()=>{calls++;return cloud;}},cloud,()=>{});
+ const loaded=await storage.loadWorkspace();
+ expect(loaded.tasks).toHaveLength(2);expect(loaded.tasks[0]).toMatchObject({description:'Cloud notes',attachments:[attachment]});expect(loaded.tasks[1]).not.toHaveProperty('attachments');
+ await storage.saveWorkspace({...loaded,tasks:[{...loaded.tasks[0],attachments:[]},loaded.tasks[1]]});
+ expect(calls).toBe(0);expect((await f.raw.loadWorkspace())!.tasks[0].attachments).toEqual([]);
+});
