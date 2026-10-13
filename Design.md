@@ -67,3 +67,11 @@ Five required inputs; school email appears only as an automatic-generation hint 
 ## Academic sync review, 2026-10-10
 
 Before upload, show local/cloud counts, exact synchronized areas and an ownership confirmation. Allow keeping the workspace local. Existing cloud records are adopted explicitly; original local records get a retained backup. Interrupted saves show a stopped-sync notice and review action. Explain that reopened devices fetch updates and that notes/resources/files remain local. Never present this limited academic sync as complete cloud storage.
+
+## Student ID format — 2026-10-13
+
+Student ID is an eight-character field with uppercase keyboard capitalization and a concise localized validation message for D/M/P plus seven digits. Do not add the degree-prefix reference explanation to the interface.
+
+## Empty timetable import — 2026-10-13
+
+If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.

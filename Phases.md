@@ -71,3 +71,11 @@ School email entry removed; backend derives/stores it on save and student-ID cha
 ## Academic slice completed and hosting changed, 2026-10-10
 
 Vercel Hobby is the frontend target; GitHub remains source. Local vercel.json build/SPA/header configuration is prepared, without a Vercel project or public deployment. First course/planner sync slice is implemented on the development Convex backend: reviewed import, original IDs/relationships, owner-private bounded snapshot, serialized saves, revision conflict refusal and pending-request recovery. Other devices fetch account academic data on reopening. Notes/resources/files/reminders/deletion and full release checks remain unfinished. The UI snapshot does not use the older per-record foundation tables. Next slice: improve conflict resolution/backup recovery and wire notes/resources with authenticated private files; test real account transport and multiple devices.
+
+## Student ID format — 2026-10-13
+
+Student ID validation tightened in the shared client/server profile path and native form constraints. Regression checks cover all three prefixes, exact length, ASCII digits and failed-write preservation. Requested beta publication pending verification and CI.
+
+## Empty timetable import — 2026-10-13
+
+If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.

@@ -118,6 +118,17 @@ test('school email is generated in storage and regenerated when the student ID c
   await expect(a.action(ref('profiles:save'),{profile:{...profile,schoolEmail:'forged@example.com'}})).rejects.toThrow();
   expect(await a.action(ref('profiles:get'),{})).toMatchObject({schoolEmail:'d7654321@o365.fcu.edu.tw'});
 });
+test('student ID format is enforced server-side and failed updates preserve the profile',async()=>{
+  const t=convexTest(schema,modules),a=user(t,'A');
+  for(const studentId of ['D1234567','M1234567','P1234567']){
+    await a.action(ref('profiles:save'),{profile:{...profile,studentId}});
+    expect(await a.action(ref('profiles:get'),{})).toMatchObject({studentId,schoolEmail:`${studentId.toLowerCase()}@o365.fcu.edu.tw`});
+  }
+  for(const studentId of ['D123456','D12345678','A1234567','d1234567','m1234567','p1234567','12345678','D123_567','D123A567','D１２３４５６７','D123 567']){
+    await expect(a.action(ref('profiles:save'),{profile:{...profile,studentId}})).rejects.toThrow('INVALID_PROFILE');
+  }
+  expect(await a.action(ref('profiles:get'),{})).toMatchObject({studentId:'P1234567',schoolEmail:'p1234567@o365.fcu.edu.tw'});
+});
 test('Taiwan mobile format is enforced server-side and failed updates preserve the profile',async()=>{
   const t=convexTest(schema,modules),a=user(t,'A');
   for(const phone of ['0912345678','+886912345678']){
