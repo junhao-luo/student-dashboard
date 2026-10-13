@@ -3,6 +3,11 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import ts from 'typescript';
 
+if(typeof ts.createSourceFile!=='function'||ts.ScriptTarget?.Latest===undefined||!ts.ScriptKind){
+ console.error('Security scan requires the TypeScript JavaScript compiler API. Keep the supported TypeScript version until the scanner is migrated; do not bypass this check.');
+ process.exit(1);
+}
+
 // Print filenames and check names only; never print matched credentials or source lines.
 const failures=new Set();
 const checked=new Set();

@@ -4,6 +4,7 @@ import {action,internalMutation,internalQuery} from './model';
 import {guard,owner,requireProfile} from './access';
 import {academicValue,snapshotValue} from './academicValues';
 import {validAcademic} from '../src/academic';
+import {setReminder} from './reminders';
 const args={revision:v.number(),requestId:v.string(),data:academicValue};
 export const read=internalQuery({args:{},returns:v.union(v.null(),snapshotValue),handler:async ctx=>{
  const who=await owner(ctx);await requireProfile(ctx,who);
@@ -22,6 +23,9 @@ export const write=internalMutation({args,returns:snapshotValue,handler:async(ct
  const revision=input.revision+1;
  if(current)await ctx.db.patch(current._id,{revision,requestId:input.requestId,data:input.data});
  else await ctx.db.insert('academicWorkspaces',{owner:who,revision,requestId:input.requestId,data:input.data});
+ const tasks=new Map(input.data.tasks.map(task=>[task.id,task]));
+ for(const previous of current?.data.tasks??[])if(!tasks.has(previous.id))await setReminder(ctx,who,`academic:${previous.id}`,null);
+ for(const task of input.data.tasks)await setReminder(ctx,who,`academic:${task.id}`,task,input.data.courses.find(course=>course.id===task.courseId)?.name??'');
  return {revision,data:input.data};
 }});
 export const get=action({args:{},returns:v.union(v.null(),snapshotValue),handler:async ctx=>{await guard(ctx,'read');return await ctx.runQuery(makeFunctionReference<'query'>('academic:read'),{});}});

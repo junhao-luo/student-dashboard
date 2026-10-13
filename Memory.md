@@ -1,6 +1,34 @@
 # Memory
 
+## Footer, workspace capture and task reminders — 2026-10-13
+
+User requested bilingual creator credit (Eljhon Satsat / 羅俊豪), visible beta disclaimer, screenshot of workspace before report UI, assignment/exam reminders from reminder@eljhon.me, and publication to the public beta. Applied project-local Ponytail, backend-patterns and security-review. Captures now finish before the dialog opens; existing private-element filtering/review/removal remains. Browser fixture confirms captured image shows the synthetic workspace, with no report form, and both footer languages. Proof .playwright-cli/workspace-bug-preview.png. No report or live reminder email was submitted during this UI check.
+
+Added opt-in reminder controls and internal durable jobs on validated snapshot/task writes, cancellation and generation checks, server-derived school recipient, frozen idempotent payload, two-minute watchdog, three bounded attempts and atomic account/deployment caps. Synthetic tests cover cancellation/deletion, rescheduling/no duplicate save, forged cross-user writes, snapshot deletion, missing configuration, stale generations, concurrent claims, transient retry, quota exhaustion and zero-day delay/expiry. Full build:hosting, type checks, all 43 tests and static/bundle scans passed. Updated all six docs and docs/Reminders.md. Public domain anonymous HTTP returned 200 on October 13; no protection settings changed. Hosted deployment/delivery readback pending.
+
+## Editable timetable import review — 2026-10-13
+
+Applied project-local Ponytail and frontend-ui-engineering using the user's weekly-grid reference. Replaced repeated review rows with ImportedTimetable: 14 period labels, time-positioned weekday blocks, conditional weekends, selected-class editor and full-list fallback. Kept PDF parser, local draft boundaries and merge/replace saving. Added overlap lane layout plus a regression test. Native time input now handles input events so edits update draft immediately.
+
+Checks: all 18 frontend tests passed, final frontend type check/build passed and static security scan found zero issues. Synthetic browser fixture verified selection, room edits, weekday/weekend placement, immediate time updates and return focus. Requested mobile viewport was 390×844; the in-app browser reported 448px actual width, so exact 390px and physical Safari remain unverified. Screenshot .playwright-cli/import-review-mobile.png contains synthetic courses only. No user records imported or saved, no deployment changed.
+
+## TypeScript dependency preview failure — 2026-10-10
+
+Follow-up, 2026-10-13: closed incompatible Dependabot PR #4 without merging. Published only the two compatibility files as 388b5c27288a8438eadeba1938b58dc80192c1b7 on codex/beta-preview and opened PR #5 for main. Re-ran verification: 17 frontend and 20 server/client tests passed, backend type check passed, audit zero vulnerabilities, static scanner zero findings. The full hosting build passed on October 10 with the same compatibility changes. Production and public-access settings were not changed; main integration is pending PR review.
+
+Applied project-local debugging-and-error-recovery. Vercel preview ETHKxZAeputEbmP1Jg5g9QXbVjJA for Dependabot commit 913444a fails in scripts/security-check.mjs before compilation: TypeScript 7.0.2 has no ScriptTarget.Latest from the old JavaScript compiler API. Microsoft documents that API for versions below 7. Production f7e69c2 uses the tested TypeScript 5 version and its build succeeded. Hold automated TypeScript major updates, retaining minor/patch updates; migrate the AST security scanner explicitly before adopting the new compiler. Added an actionable fail-closed compatibility error; no security checks skipped. Verification and remote follow-up pending.
+
+## Protected production installation — 2026-10-10
+
+Verified Production-only deploy key saved without reading value. Auto-review initially rejected main promotion as needing specific authorization; user approved protected production build, then f7e69c2 pushed to main. Vercel 7L2g5NrWwaZ8KqaswwnHau9P2DHX Ready35s, coupled Convex/frontend deployment active. Production Resend key entered by owner; name confirmed only. Four live production auth negatives pass after fixing checker to inspect exact ConvexError.data with production logs disabled. Portfolio scoped rewrite commits f9fb8be/1d297f6 pushed; explicit root-slash rule fixes initial 404. Portfolio root unaffected. Public access still requires action-time approval to switch All Deployments to Standard Protection, and actual production login/header/isolation/restore evidence remains pending. Proof .playwright-cli/coursedock-production-ready.jpg and .playwright-cli/coursedock-public-beta-approval.jpg. No secret, real student data or account migration copied.
+
+## Domain publication preparation — 2026-10-10
+
+User requested publishing beta at eljhon.me/student-dashboard. Applied project-local shipping-and-launch and Ponytail; read production gates and official Convex/Vercel instructions. Saved observed Clerk production publishable key to Vercel Production config only, confirmed success. Convex production remains undeployed. Prepared deploy-only key creation and a Production Secret field for CONVEX_DEPLOY_KEY; asked user to create/copy/save themselves under browser credential policy. No secret read. Proof .playwright-cli/production-deploy-key-prepared.jpg. Cloned authorized portfolio into ignored local workspace checkout; prepared prefix-preserving two-rule rewrite to dashboard-confirmed project-t46co.vercel.app. No push/live routing/protection change. Public launch still requires production setup and documented security evidence. Remaining production support sender credential must be entered directly by owner.
+
 ## Reporter details in support email — 2026-10-10
+
+Remote readback: f7e69c26408f2d155b13257f6df91e44de5af28a pushed to codex/beta-preview. GitHub security workflow 38031483598 succeeded in 41s. Protected Vercel Preview 5AQc6fG6Yh55Qu4Mya84gqoAS5wn Ready in 3m7s at 14:38:53 Taipei; branch alias unchanged. Proof .playwright-cli/support-profile-vercel-ready.jpg. No new live email containing the expanded student profile was submitted; its payload/attachments are covered by synthetic tests. Readback recorded locally after push.
 
 Applied project-local Ponytail and security-review to the requested support-email expansion. Reused authenticated private profile lookup and existing attachments. Complaints, suggestions and bugs now include six allowlisted server profile fields: name, student ID, department/program, class, derived school email and mobile. Bug diagnostics appear inline and in diagnostics.txt; retained screenshot remains workspace.png. EN/ZH form disclosures and privacy copy updated. Clients cannot override identity/profile. No new real student-data email sent for this change.
 

@@ -1,5 +1,7 @@
 # Delivery plan
 
+Beta follow-up, 2026-10-13: local implementation adds bilingual creator/beta footer, workspace-first report capture, and scheduled opt-in task email reminders. Offline tests, source/bundle checks and full build pass; hosted installation, actual scheduled email delivery and user onboarding/session checks require separate evidence. Private notes/resources/files, account deletion, complete backup/restore and other security gaps remain unfinished. Do not mark the whole release checklist complete.
+
 Support email update, 2026-10-10: implemented six server-derived reporter details for complaints, suggestions and bugs, plus inline/attached diagnostics and the retained screenshot. All 37 tests and hosting build/security gates pass. New tests verify two distinct profiles, all report types, forged-profile rejection and exact attachment contents. Backend/preview installation evidence follows in Memory.md.
 
 Support slice, 2026-10-10: bilingual Contact support and floating beta report review implemented locally; tested support action installed on development. Sender domain verified and owner reports server key/mailbox setup. Trackpad interception fixed by excluding the modal from Lenis; Chromium wheel verification passes. 36 combined tests pass. Push/update of the protected Vercel preview is now explicitly requested. Actual inbox receipt and production sender configuration remain separate checks; this does not complete reminders or other public-release controls. See docs/Support-setup.md.
