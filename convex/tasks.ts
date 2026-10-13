@@ -11,13 +11,14 @@ export const read=internalQuery({args:listArgs,returns:page,handler:async(ctx,{c
   const who=await ownedCourse(ctx,courseId);checkPage(cursor,limit);
   // https://docs.convex.dev/database/pagination
   const result=await ctx.db.query('tasks').withIndex('by_owner_course',q=>q.eq('owner',who).eq('courseId',courseId)).paginate({cursor,numItems:limit,maximumRowsRead:100});
-  return {items:result.page.map(t=>({id:t._id,courseId:t.courseId,title:t.title,kind:t.kind,due:t.due,done:t.done,reminderDays:t.reminderDays})),cursor:result.isDone?null:result.continueCursor,isDone:result.isDone};
+  return {items:result.page.map(t=>({id:t._id,courseId:t.courseId,title:t.title,kind:t.kind,due:t.due,done:t.done,...(t.status?{status:t.status}:{}),...(t.description!==undefined?{description:t.description}:{}),reminderDays:t.reminderDays})),cursor:result.isDone?null:result.continueCursor,isDone:result.isDone};
 }});
 export const write=internalMutation({args:{id:v.optional(v.id('tasks')),task:value},returns:v.id('tasks'),handler:async(ctx,{id,task})=>{
   const who=await ownedCourse(ctx,task.courseId);
   const time=Date.parse(task.due);
+  if((task.description!==undefined&&task.description.length>10000)||(task.status!==undefined&&task.done!==(task.status==='complete')))throw new ConvexError('INVALID_TASK');
   if(!task.title.trim()||task.title.length>200||!Number.isFinite(time)||new Date(time).toISOString()!==task.due||time<Date.UTC(2000,0,1)||time>=Date.UTC(2100,0,1)||(task.reminderDays!==null&&(!Number.isInteger(task.reminderDays)||task.reminderDays<0||task.reminderDays>365)))throw new ConvexError('INVALID_TASK');
-  const data={...task,title:task.title.trim()};
+  const data={...task,status:task.status,description:task.description,title:task.title.trim()};
   const course=await ctx.db.get(task.courseId);
   if(id){const current=await ctx.db.get(id);if(!current||current.owner!==who)throw new ConvexError('NOT_FOUND');await ctx.db.patch(id,data);await setReminder(ctx,who,`task:${id}`,data,course!.name);return id;}
   await requireRecordCapacity(ctx,'tasks',who);

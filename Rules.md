@@ -81,3 +81,7 @@ Reject profile saves with student IDs outside uppercase D/M/P plus seven ASCII d
 ## Empty timetable import — 2026-10-13
 
 If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
+
+## Academic feature handoff — 2026-10-13
+
+Task status and done must agree; descriptions bounded to 10,000 chars. Assignment attachments remain private to the account/device, included in ZIP and removed on task/course deletion. Office parsing refuses macros, traversal and oversized expansion; no external preview service. Final verification deferred by user; do not merge/publicly publish this feature branch before release checks.

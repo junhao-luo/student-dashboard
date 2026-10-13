@@ -11,11 +11,11 @@ export const read=internalQuery({args:{semester:v.string(),limit:v.number()},ret
   const id=await owner(ctx);await requireProfile(ctx,id);
   if(!/^\d{3}-[12]$/.test(semester)||!Number.isInteger(limit)||limit<1||limit>50)throw new ConvexError('INVALID_LIST');
   const courses=await ctx.db.query('courses').withIndex('by_owner_semester',q=>q.eq('owner',id).eq('semester',semester)).take(limit);
-  return courses.map(c=>({id:c._id,semester:c.semester,code:c.code,name:c.name,instructor:c.instructor,credits:c.credits,room:c.room,color:c.color}));
+  return courses.map(c=>({id:c._id,semester:c.semester,code:c.code,name:c.name,instructor:c.instructor,credits:c.credits,...(c.courseType?{courseType:c.courseType}:{}),room:c.room,color:c.color}));
 }});
 export const write=internalMutation({args:{id:v.optional(v.id('courses')),course:courseValue},returns:v.id('courses'),handler:async(ctx,{id,course})=>{
   const who=await owner(ctx);await requireProfile(ctx,who);validateCourse(course);
-  const data={...course,name:course.name.trim()};
+  const data={...course,courseType:course.courseType,name:course.name.trim()};
   if(id){const current=await ctx.db.get(id);if(!current||current.owner!==who)throw new ConvexError('NOT_FOUND');await ctx.db.patch(id,data);return id;}
   await requireRecordCapacity(ctx,'courses',who);
   return await ctx.db.insert('courses',{owner:who,...data});

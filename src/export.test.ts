@@ -21,3 +21,9 @@ test('ZIP refuses missing files rather than silently dropping attachments',async
 test('export filenames cannot escape their directories',()=>{
   assert.equal(exportName('../../secret\n.txt'),'_.._secret_.txt');
 });
+test('ZIP includes original assignment attachments',async()=>{
+ const value={...workspace,notes:[],resources:[],tasks:[{id:'t',courseId:'c',title:'Study',kind:'assignment' as const,due:'2026-10-15T00:00:00.000Z',done:false,reminderDays:null,attachments:[{fileId:'assignment-file',name:'handout.pdf',size:3}]}]};
+ const entries=unzipSync(await exportWorkspace(value,async()=>new Blob(['abc'])));
+ const manifest=JSON.parse(strFromU8(entries['manifest.json']));
+ assert.equal(strFromU8(entries[manifest.files['assignment-file'].path]),'abc');
+});

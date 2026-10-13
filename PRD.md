@@ -60,3 +60,7 @@ Student IDs must be uppercase D, M or P followed by exactly seven ASCII digits. 
 ## Empty timetable import — 2026-10-13
 
 If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
+
+## Academic feature handoff — 2026-10-13
+
+Requested: all-course semester credits split required/elective; each course a resource root with nested file explorer; local DOCX/PPTX/PDF opening; assignment descriptions/attachments, calendar detail popup and three-state table. Implemented on feature branch; final tests/public release deferred per user. See handoff.md.

@@ -75,3 +75,7 @@ Student ID is an eight-character field with uppercase keyboard capitalization an
 ## Empty timetable import — 2026-10-13
 
 If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
+
+## Academic feature handoff — 2026-10-13
+
+Credit totals appear on Overview/all-courses. Assignments use a semantic table and Not started/In progress/Complete dropdown; calendar entries open a native detail popup. Resources use course-folder tiles and current-folder uploads with breadcrumbs. PDF/Office previews have local new-tab/download controls; Office content layout may differ. Final Chinese/dark/320px review deferred.

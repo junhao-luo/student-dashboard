@@ -90,3 +90,7 @@ The shared normalizeStudentProfile validator enforces /^[DMP][0-9]{7}$/ on every
 ## Empty timetable import — 2026-10-13
 
 If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
+
+## Academic feature handoff — 2026-10-13
+
+Optional course type/task status/description extend private academic schemas with backward compatibility. Local task attachments are excluded from cloud snapshots and restored by ID on reload. Shared local file actions use bounded Office ZIP/XML content previews and blob PDF viewing. See handoff.md for exact implementation and remaining verification.

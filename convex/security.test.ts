@@ -152,6 +152,22 @@ test('cross-user reads, updates and deletion are denied, including owner field t
   await expect(a.action(ref('courses:save'),{course:{...course,credits:-1}})).rejects.toThrow('INVALID_COURSE');
   expect(await a.action(ref('courses:list'),{semester:'115-1',limit:50})).toHaveLength(1);
 });
+test('course types and deadline details/status sync with bounded validation',async()=>{
+ const t=convexTest(schema,modules),a=user(t,'A');await a.action(ref('profiles:save'),{profile});
+ const courseId=await a.action(ref('courses:save'),{course:{...course,courseType:'elective'}});
+ expect((await a.action(ref('courses:list'),{semester:'115-1',limit:50}))[0].courseType).toBe('elective');
+ const task={courseId,title:'Study',kind:'assignment',due:'2026-10-15T00:00:00.000Z',done:false,status:'in_progress',description:'Read chapter one',reminderDays:null};
+ await a.action(ref('tasks:save'),{task});
+ expect((await a.action(ref('tasks:list'),{courseId,cursor:null,limit:50})).items[0]).toMatchObject({status:'in_progress',description:'Read chapter one'});
+ await expect(a.action(ref('tasks:save'),{task:{...task,status:'complete'}})).rejects.toThrow('INVALID_TASK');
+ await expect(a.action(ref('tasks:save'),{task:{...task,description:'x'.repeat(10001)}})).rejects.toThrow('INVALID_TASK');
+ await expect(a.action(ref('courses:save'),{course:{...course,courseType:'forged'}})).rejects.toThrow();
+ const data={...academic,courses:[{...academic.courses[0],courseType:'required'}],tasks:[{...academic.tasks[0],status:'in_progress',description:'Homework details'}]};
+ await a.action(ref('academic:save'),{revision:0,requestId:'details',data});
+ expect((await a.action(ref('academic:get'),{})).data.tasks[0]).toMatchObject({status:'in_progress',description:'Homework details'});
+ await expect(a.action(ref('academic:save'),{revision:1,requestId:'forged-status',data:{...data,tasks:[{...data.tasks[0],status:'complete'}]}})).rejects.toThrow('INVALID_ACADEMIC');
+ await expect(a.action(ref('academic:save'),{revision:1,requestId:'local-files',data:{...data,tasks:[{...data.tasks[0],attachments:[]}]}})).rejects.toThrow();
+});
 test('read and write budgets are per verified identity and reset after one minute',async()=>{
   vi.useFakeTimers({toFake:['Date']});
   try{

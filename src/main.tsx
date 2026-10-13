@@ -54,6 +54,11 @@ const PdfImport = lazy(() =>
   import("./PdfImport").then((module) => ({ default: module.PdfImport })),
 );
 import type { ImportedMeeting } from "./pdf-parser";
+import {courseFolder,folderParent} from './resource-folders';
+import {TaskTable} from './TaskTable';
+import {TaskDetail} from './TaskDetail';
+import {CreditSummary} from './CreditSummary';
+import {taskStatus,type TaskStatus} from './domain';
 import { ResourceLibrary } from "./ResourceLibrary";
 import {useLocation,useNavigate} from 'react-router';
 
@@ -108,6 +113,8 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
   const [courseTab,setCourseTab]=useState(initial?.courseTab ?? "notes");
   const [selectedCourse, setSelectedCourse] = useState(initial?.selectedCourse ?? "");
   const [quickKind,setQuickKind]=useState("assignment");
+  const [viewedTaskId,setViewedTaskId]=useState('');
+  const viewedTask=tasks.find(task=>task.id===viewedTaskId);
   const [editingId,setEditingId]=useState('');
   const editingTask=tasks.find(item=>item.id===editingId);
   const editingMeeting=meetings.find(item=>item.id===editingId);
@@ -224,6 +231,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
         instructor: value("instructor"),
         room: value("room"),
         credits: Number(value("credits")),
+        ...(value("courseType")?{courseType:value("courseType") as 'required'|'elective'}:{}),
         color: "blue",
       };
       const problem = validateCourse(course);
@@ -253,7 +261,10 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
           title: value("title"),
           kind: value("kind") === "exam" ? "exam" : "assignment",
           due: taiwanDate(value("due"))!,
-          done: form==='edit-task' ? editingTask?.done ?? false : false,
+          done: value('taskStatus')==='complete',
+          status:value('taskStatus') as TaskStatus,
+          description:value('description'),
+          ...(editingTask&&form==='edit-task'?{attachments:editingTask.attachments}:{}),
           reminderDays: data.get('reminder')==='on' ? (value('reminderDays')==='' ? NaN : Number(value('reminderDays'))) : null,
       };
       const due=taiwanDate(value('due'));
@@ -261,6 +272,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
       if(task.reminderDays!==null&&(!Number.isInteger(task.reminderDays)||task.reminderDays<0||task.reminderDays>365)){setError(t('Choose a reminder between 0 and 365 whole days before the deadline.','提醒須設定為截止前 0 至 365 個整天。'));return;}
       task.due=due;
       setTasks(form==='edit-task'?tasks.map(item=>item.id===editingId?task:item):[...tasks,task]);
+      setViewedTaskId(task.id);
     } else if ((form === "meeting" || form === "edit-meeting")) {
       const meeting = {
         id:form==='edit-meeting'?editingId:id,
@@ -374,14 +386,15 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
       )
     )
       return;
-    try {await removeFiles(notes.filter(n=>n.courseId===id).flatMap(n=>(n.attachments||[]).map(a=>a.fileId)));}
+    try {await removeFiles([...notes.filter(n=>n.courseId===id).flatMap(n=>(n.attachments||[]).map(a=>a.fileId)),...tasks.filter(task=>task.courseId===id).flatMap(task=>(task.attachments??[]).map(a=>a.fileId))]);}
     catch {setStatus(t('Could not delete course attachments. Try again.','無法刪除課程附件，請重試。'));return;}
     const result = deleteCourse(id, { courses, tasks, meetings, notes });
     setCourses(result.courses);
     setTasks(result.tasks);
     setMeetings(result.meetings);
     setNotes(result.notes);
-    setResources(resources.map(resource=>resource.courseId===id?{...resource,courseId:''}:resource));
+    setResources(resources.map(resource=>resource.courseId===id?{...resource,courseId:'',folderId:resource.folderId===courseFolder(id)?'general':resource.folderId}:resource));
+    setFolders(folders.map(folder=>folder.courseId===id?{...folder,courseId:'',parentId:folderParent(folder)===courseFolder(id)?'general':folder.parentId}:folder));
     setSelectedCourse("");
   }
   const courseSelect = (
@@ -400,69 +413,11 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
       </Select>
     </label>
   );
-  const taskList = (items: Task[]) =>
-    items.length ? (
-      <div className="task-list">
-        {items.map((task) => (
-          <div className="task-row" key={task.id}>
-            <input
-              type="checkbox"
-              aria-label={`${t("Complete", "完成")} ${task.title}`}
-              checked={task.done}
-              onChange={() =>
-                setTasks(
-                  tasks.map((item) =>
-                    item.id === task.id ? { ...item, done: !item.done } : item,
-                  ),
-                )
-              }
-            />
-            <div className={task.done ? "completed" : ""}>
-              <strong>{task.title}</strong>
-              <small>
-                {courseFor(task.courseId)?.name} ·{" "}
-                {task.kind === "exam"
-                  ? t("Exam", "考試")
-                  : t("Assignment", "作業")}
-              </small>
-            </div>
-            <time>
-              {new Date(task.due).toLocaleString(
-                lang === "zh" ? "zh-TW" : "en-US",
-                {
-                  timeZone: "Asia/Taipei",
-                  month: "short",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                },
-              )}
-            </time>
-            <button
-              aria-label={t('Edit','編輯')+' '+task.title} onClick={()=>editTask(task)}>{t('Edit','編輯')}</button><button
-              className="icon"
-              aria-label={`${t("Delete", "刪除")} ${task.title}`}
-              onClick={() =>
-                setTasks(tasks.filter((item) => item.id !== task.id))
-              }
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p className="empty">
-        {activeTasks.length
-          ? t("All deadlines completed.", "所有截止事項已完成。")
-          : t(
-              "No deadlines yet. Add an assignment or exam to plan your week.",
-              "目前沒有截止事項。新增作業或考試，開始規劃本週。",
-            )}
-      </p>
-    );
+  async function removeTask(task:Task){try{await removeFiles((task.attachments??[]).map(file=>file.fileId));setTasks(current=>current.filter(t=>t.id!==task.id));}catch{setStatus(t('Could not delete the attachments. Try again.','無法刪除附件，請重試。'));}}
+  const taskList=(items:Task[])=><TaskTable tasks={items} courses={courses} zh={lang==='zh'} onOpen={task=>setViewedTaskId(task.id)} onEdit={editTask} onChange={task=>setTasks(tasks.map(x=>x.id===task.id?task:x))} onDelete={task=>void removeTask(task)}/>;
   function renderFolders(parent:string,visited=new Set<string>()):React.ReactNode {
-    return folders.filter(f=>f.parentId===parent&&!visited.has(f.id)).map(f=><details key={f.id}><summary><button onClick={e=>{e.preventDefault();const item=e.currentTarget.closest('details');if(item)item.open=!item.open;setFolderId(f.id);setPage('resources');setMobileOpen(false);}}>📁 {f.name}<span aria-hidden="true" className="menu-chevron">⌄</span></button></summary>{renderFolders(f.id,new Set([...visited,f.id]))}</details>);
+    if(!parent)return [<button key="general" onClick={()=>{setFolderId('general');setPage('resources');setMobileOpen(false);}}>{t('General resources','一般資源')}</button>,...courses.map(course=><details key={course.id}><summary><button onClick={e=>{e.preventDefault();const item=e.currentTarget.closest('details');if(item)item.open=!item.open;setFolderId(courseFolder(course.id));setPage('resources');setMobileOpen(false);}}>📁 {course.name}<span aria-hidden="true" className="menu-chevron">⌄</span></button></summary>{renderFolders(courseFolder(course.id))}</details>)];
+    return folders.filter(f=>folderParent(f)===parent&&!visited.has(f.id)).map(f=><details key={f.id}><summary><button onClick={e=>{e.preventDefault();const item=e.currentTarget.closest('details');if(item)item.open=!item.open;setFolderId(f.id);setPage('resources');setMobileOpen(false);}}>📁 {f.name}<span aria-hidden="true" className="menu-chevron">⌄</span></button></summary>{renderFolders(f.id,new Set([...visited,f.id]))}</details>);
   }
   function quick(kind:string){if(!activeCourses.length){setStatus(t('Add a course first.','請先新增課程。'));return;}if(kind==='note'){const id=crypto.randomUUID();const courseId=selectedCourse||activeCourses[0].id;setSelectedCourse(courseId);setNotes([...notes,{id,courseId,title:t('Untitled note','未命名筆記'),body:''}]);setCourseTab('notes');setPage('courses');}else{setQuickKind(kind);openForm('task');}}
   return (
@@ -538,7 +493,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
             </p>
             <h1 tabIndex={-1}>{page==='contact'?t('Contact support','聯絡客服'):page==='courses'&&selectedCourse?courseFor(selectedCourse)?.name:nav.find((n) => n[0] === page)?.[2]}</h1>
           </div>
-          {page !== "contact" && page !== "settings" && page !== "calendar" && (
+          {page !== "contact" && page !== "settings" && page !== "calendar" && page !== "resources" && (
             <button
               className="primary"
               onClick={() =>
@@ -569,7 +524,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
           )}
         </div>
         {page === "overview" && (
-          <><ClassNow courses={activeCourses} meetings={activeMeetings} zh={lang==='zh'}/><div className="quick-capture"><button onClick={()=>quick('note')}>{t('New note','新增筆記')}</button><button onClick={()=>quick('assignment')}>{t('New assignment','新增作業')}</button><button onClick={()=>quick('exam')}>{t('New exam','新增考試')}</button></div>
+          <><CreditSummary courses={courses} semester={semester} zh={lang==='zh'}/><ClassNow courses={activeCourses} meetings={activeMeetings} zh={lang==='zh'}/><div className="quick-capture"><button onClick={()=>quick('note')}>{t('New note','新增筆記')}</button><button onClick={()=>quick('assignment')}>{t('New assignment','新增作業')}</button><button onClick={()=>quick('exam')}>{t('New exam','新增考試')}</button></div>
             <p className="subtitle">
               {t(
                 "Check your courses and upcoming deadlines.",
@@ -707,7 +662,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                           t("Instructor not set", "尚未填寫教師")}
                       </p>
                       <span>
-                        {c.credits} {t("credits", "學分")} · {c.room || "—"}
+                        {c.credits} {t("credits", "學分")} · {c.courseType==='required'?t('Required','必修'):c.courseType==='elective'?t('Elective','選修'):t('Unclassified','未分類')} · {c.room || "—"}
                       </span>
                     </button>
                   ))}
@@ -719,6 +674,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
         {page==='overview'&&notes.length>0&&<section className="recent-notes"><h2>{t('Recent notes','最近筆記')}</h2>{notes.slice(-5).reverse().map(n=><button key={n.id} onClick={()=>{setSelectedCourse(n.courseId);setCourseTab('notes');setPage('courses');}}>{n.title}<small>{courseFor(n.courseId)?.name}</small></button>)}</section>}
         {page === "courses" && (
           <>
+            {!selectedCourse&&<CreditSummary courses={courses} semester={semester} zh={lang==='zh'}/>}
             {!selectedCourse && <div className="course-grid course-list">
               {activeCourses.map((c) => (
                 <button
@@ -729,7 +685,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                   <small>{c.code || semester}</small>
                   <h2>{c.name}</h2>
                   <p>
-                    {c.instructor} · {c.credits} {t("credits", "學分")}
+                    {c.instructor} · {c.credits} {t("credits", "學分")} · {c.courseType==='required'?t('Required','必修'):c.courseType==='elective'?t('Elective','選修'):t('Unclassified','未分類')}
                   </p>
                 </button>
               ))}
@@ -756,9 +712,9 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                 </div>
                 <p className="muted">{courseFor(selectedCourse)?.code} · {courseFor(selectedCourse)?.instructor} · {courseFor(selectedCourse)?.credits} {t('credits','學分')} · {courseFor(selectedCourse)?.room}</p>
                 <div className="view-tabs">{[['notes',t('Notes','筆記')],['tasks',t('Assignments & exams','作業與考試')],['schedule',t('Schedule','上課時間')],['resources',t('Resources','資源')]].map(([id,label])=><button key={id} aria-pressed={courseTab===id} onClick={()=>setCourseTab(id)}>{label}</button>)}</div>
-                {courseTab==='tasks'&&<><button onClick={()=>openForm('task')}>{t('Add deadline','新增期限')}</button><TaskViews tasks={tasks} courses={courses.filter(c=>c.id===selectedCourse)} onChange={setTasks} onEdit={editTask} zh={lang==='zh'}/></>}
+                {courseTab==='tasks'&&<><button onClick={()=>openForm('task')}>{t('Add deadline','新增期限')}</button><TaskViews onDelete={task=>void removeTask(task)} onOpen={task=>setViewedTaskId(task.id)} tasks={tasks} courses={courses.filter(c=>c.id===selectedCourse)} onChange={setTasks} onEdit={editTask} zh={lang==='zh'}/></>}
                 {courseTab==='schedule'&&<><button onClick={()=>openForm('meeting')}>{t('Add class','新增上課時間')}</button>{meetings.filter(m=>m.courseId===selectedCourse).map(m=><p key={m.id}>{days[m.day-1]} {m.start}–{m.end} · {m.room} <button onClick={()=>editMeeting(m)}>{t('Edit class','編輯上課時段')}</button></p>)}</>}
-                {courseTab==='resources'&&<><button onClick={()=>openForm('resource')}>{t('Add resource','新增資源')}</button><ResourceLibrary key={selectedCourse} resources={resources} courses={courses} onChange={setResources} zh={lang==='zh'} folders={folders} onFoldersChange={setFolders} folderId={folderId} onFolderChange={setFolderId} initialFilter={selectedCourse}/></>}
+                {courseTab==='resources'&&<><ResourceLibrary key={selectedCourse} resources={resources} courses={courses} onChange={setResources} zh={lang==='zh'} folders={folders} onFoldersChange={setFolders} folderId={folderId} onFolderChange={setFolderId} initialFilter={selectedCourse}/></>}
                 {courseTab==='notes'&&<>
                 <div className="section-head">
                   <h3>{t("Course notes", "課程筆記")}</h3>
@@ -789,7 +745,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
             )}
           </>
         )}
-        {page === 'tasks' && <TaskViews tasks={tasks} courses={activeCourses} onChange={setTasks} onEdit={editTask} zh={lang==='zh'}/>}
+        {page === 'tasks' && <TaskViews onDelete={task=>void removeTask(task)} onOpen={task=>setViewedTaskId(task.id)} tasks={tasks} courses={activeCourses} onChange={setTasks} onEdit={editTask} zh={lang==='zh'}/>}
         {page === "timetable" && (
           <section className="panel">
             <div className="section-head">
@@ -944,6 +900,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                       required
                     />
                   </label>
+                  <label>{t('Course type','課程類型')}<Select name="courseType" defaultValue={form==='edit-course'?courseFor(selectedCourse)?.courseType??'':'required'}><option value="">{t('Unclassified','未分類')}</option><option value="required">{t('Required','必修')}</option><option value="elective">{t('Elective','選修')}</option></Select></label>
                   <label>
                     {t("Instructor", "授課教師")}
                     <input name="instructor" maxLength={100} defaultValue={form==='edit-course'?courseFor(selectedCourse)?.instructor:''}/>
@@ -975,6 +932,8 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                   {t("Due date & time (Taiwan)", "截止日期與時間（台灣）")}
                   <input name="due" type="datetime-local" required defaultValue={form==='edit-task'&&editingTask?new Date(new Date(editingTask.due).getTime()+8*60*60*1000).toISOString().slice(0,16):''}/>
                 </label>
+                <label>{t('Status','狀態')}<Select name="taskStatus" defaultValue={form==='edit-task'&&editingTask?taskStatus(editingTask):'not_started'}><option value="not_started">{t('Not started','未開始')}</option><option value="in_progress">{t('In progress','進行中')}</option><option value="complete">{t('Complete','已完成')}</option></Select></label>
+                <label>{t('Description / notes','說明／筆記')}<textarea name="description" rows={5} maxLength={10000} defaultValue={form==='edit-task'?editingTask?.description??'':''}/></label><p className="muted">{t('After saving, add attachments in the deadline details.','儲存後可在期限詳情中新增附件。')}</p>
                 <label className="reminder-option"><input name="reminder" type="checkbox" defaultChecked={form==='edit-task'&&editingTask?.reminderDays!==null}/>{t('Email a reminder to my school email','寄送提醒至我的學校信箱')}</label>
                 <label>{t('Days before the deadline','截止前幾天')}<input name="reminderDays" type="number" min={0} max={365} step={1} defaultValue={form==='edit-task'?editingTask?.reminderDays??1:1}/></label>
                 <p className="muted">{t('Opt in to receive email from reminder@eljhon.me. Default: 1 day before; 0 means at the deadline. Save and sync this task to schedule it. Completing, deleting or disabling it cancels pending mail after syncing. Beta delivery is best effort and subject to send limits.','勾選後，會收到 reminder@eljhon.me 寄出的郵件。預設提前 1 天；0 表示截止時間。儲存並同步後才會排程；完成、刪除或關閉提醒後，須同步才能取消待寄郵件。Beta 提醒可能延遲或因寄送上限而無法送達。')}</p>
@@ -1069,6 +1028,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
           </form>
         </Modal>
       )}
+      {viewedTask&&!form&&<TaskDetail key={viewedTask.id} task={viewedTask} course={courseFor(viewedTask.courseId)} zh={lang==='zh'} onChange={task=>setTasks(tasks.map(x=>x.id===task.id?task:x))} onClose={()=>setViewedTaskId('')} onEdit={()=>{setViewedTaskId('');editTask(viewedTask);}}/>}
     </div>
   );
 }

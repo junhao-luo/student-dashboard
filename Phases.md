@@ -79,3 +79,7 @@ Student ID validation tightened in the shared client/server profile path and nat
 ## Empty timetable import — 2026-10-13
 
 If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
+
+## Academic feature handoff — 2026-10-13
+
+Feature implementation saved on codex/academic-workspace-features. Earlier build and 55 tests passed before final cleanup; user requested no more tests now. Next priority: remaining persistence/security/mobile/browser checks in handoff.md, then tested release if requested.

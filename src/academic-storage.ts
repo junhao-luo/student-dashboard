@@ -7,7 +7,8 @@ export function synchronizedStorage(raw:ReturnType<typeof accountStorage>,transp
   async importLegacy(){await raw.importLegacy();await raw.setSyncState({mode:'local'});},
   async loadWorkspace(){
    const local=await raw.loadWorkspace(),data=snapshot.data;
-   return {...(local??{version:1,lang:'en',dark:false,page:'overview',semester:data.semesters[0],notes:[],resources:[]}),...data,semester:data.semesters.includes(local?.semester??'')?local!.semester:data.semesters[0]} as Workspace;
+   const tasks=data.tasks.map(task=>{const attachments=local?.tasks.find(t=>t.id===task.id)?.attachments;return attachments?{...task,attachments}:task;});
+   return {...(local??{version:1,lang:'en',dark:false,page:'overview',semester:data.semesters[0],notes:[],resources:[]}),...data,tasks,semester:data.semesters.includes(local?.semester??'')?local!.semester:data.semesters[0]} as Workspace;
   },
   saveWorkspace(value:Workspace){
    const captured=structuredClone(value);

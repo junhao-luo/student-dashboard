@@ -5,6 +5,7 @@ export type Course = {
   name: string;
   instructor: string;
   credits: number;
+  courseType?: 'required' | 'elective';
   room: string;
   color: string;
 };
@@ -15,8 +16,20 @@ export type Task = {
   kind: "assignment" | "exam";
   due: string;
   done: boolean;
+  status?: TaskStatus;
+  description?: string;
+  attachments?: FileAttachment[];
   reminderDays: number | null;
 };
+export type TaskStatus='not_started'|'in_progress'|'complete';
+export type FileAttachment={fileId:string;name:string;size:number};
+export const taskStatus=(task:Task):TaskStatus=>task.status??(task.done?'complete':'not_started');
+export const withTaskStatus=(task:Task,status:TaskStatus):Task=>({...task,status,done:status==='complete'});
+export function semesterCredits(courses:Course[],semester:string){
+  const totals={required:0,elective:0,unclassified:0,total:0};
+  for(const course of courses.filter(c=>c.semester===semester)){totals[course.courseType??'unclassified']+=course.credits;totals.total+=course.credits;}
+  return totals;
+}
 export type Meeting = {
   id: string;
   courseId: string;
@@ -59,6 +72,7 @@ export function taiwanDate(value: string): string | null {
   return Number.isFinite(date.getTime()) ? date.toISOString() : null;
 }
 export function validateCourse(course: Course): string | null {
+  if(course.courseType!==undefined&&!['required','elective'].includes(course.courseType))return 'Choose required or elective.';
   if (!course.name.trim() || course.name.length > 120)
     return "Course name must contain 1–120 characters.";
   if (!/^\d{3}-[12]$/.test(course.semester))
