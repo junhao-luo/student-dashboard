@@ -1,3 +1,4 @@
+import { ImportedTimetable } from "./ImportedTimetable";
 import { Select, UploadArea, LoadingState } from "./Interface";
 import { useState } from "react";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
@@ -121,70 +122,7 @@ export function PdfImport({
               "課表格內沒有課程代碼與學分，請至課程資料庫補充。",
             )}
           </p>
-          {rows.map((row, index) => (
-            <div className="import-row" key={index}>
-              {(["name", "instructor", "room", "start", "end"] as const).map(
-                (field) => (
-                  <label key={field}>
-                    {
-                      {
-                        name: t("Course", "課程"),
-                        instructor: t("Instructor", "教師"),
-                        room: t("Room", "教室"),
-                        start: t("Start", "開始"),
-                        end: t("End", "結束"),
-                      }[field]
-                    }
-                    <input
-                      type={
-                        field === "start" || field === "end" ? "time" : "text"
-                      }
-                      value={row[field]}
-                      required
-                      onChange={(e) =>
-                        setRows(
-                          rows.map((item, i) =>
-                            i === index
-                              ? { ...item, [field]: e.target.value }
-                              : item,
-                          ),
-                        )
-                      }
-                    />
-                  </label>
-                ),
-              )}
-              <label>
-                {t("Day", "星期")}
-                <Select
-                  value={row.day}
-                  onChange={(e) =>
-                    setRows(
-                      rows.map((item, i) =>
-                        i === index
-                          ? { ...item, day: Number(e.target.value) }
-                          : item,
-                      ),
-                    )
-                  }
-                >
-                  {(zh
-                    ? ["一", "二", "三", "四", "五", "六", "日"]
-                    : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-                  ).map((day, i) => (
-                    <option key={day} value={i + 1}>
-                      {day}
-                    </option>
-                  ))}
-                </Select>
-              </label>
-              <button
-                onClick={() => setRows(rows.filter((_, i) => i !== index))}
-              >
-                {t("Remove", "移除")}
-              </button>
-            </div>
-          ))}
+          <ImportedTimetable rows={rows} onChange={setRows} zh={zh}/>
           <label>
             {t("Import mode", "匯入方式")}
             <Select
@@ -213,7 +151,7 @@ export function PdfImport({
           <button
             className="primary"
             disabled={rows.some(
-              (row) => !row.name.trim() || row.start >= row.end,
+              (row) => !row.name.trim() || !row.start || !row.end || row.start >= row.end,
             )}
             onClick={() => {
               onSave(rows, replace);

@@ -1,5 +1,7 @@
 # Design
 
+Timetable import review, 2026-10-13: render the draft as weekday columns with time-positioned class blocks and the 14 FCU period labels. Selecting a block opens a focused editor for course, teacher, room, day and times; edits update the draft immediately. Weekend columns appear when needed. Overlapping meetings use separate lanes, and an expandable full list keeps every meeting accessible. On narrow screens only the timetable scrolls horizontally; form fields stack. Saving still requires valid names/times and an explicit merge/replace selection.
+
 Support email update, 2026-10-10: English and Traditional Chinese contact/report forms disclose sending name, student ID, department, class, school email and mobile number to support. Keep screenshot/log review and independent removal controls.
 
 Support addition, 2026-10-10: a compact Contact support row above the profile opens a readable form using the shared category dropdown. Keep collapsed navigation icon-only. A fixed green circular bug button respects safe-area spacing and hides behind the open mobile drawer. Its keyboard-dismissable, independently scrollable dialog explains the screenshot/privacy boundary, previews the PNG, permits screenshot/log removal, and preserves failed drafts. Use English/Traditional Chinese and semantic dark/light tokens. Exclude nested dialog scrolling from Lenis.
