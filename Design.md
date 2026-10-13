@@ -1,5 +1,7 @@
 # Design
 
+Latest beta refinements, 2026-10-13: flat course menu, visible Back to all courses before the course heading, localized success popup, and an integrated live clock/current-class row on Overview. Public calendar previews have readable titles, page controls and original-PDF links above Google Calendar. Keep PDF pages white in both themes. Scroll the dropdown under the pointer without chaining to its dialog; close it to scroll the dialog, with the background locked. The clock label makes clear that class status follows the weekly timetable, without holiday inference.
+
 Landing routing, 2026-10-13: signed-out visitors see the existing hero/sign-in layout directly at /student-dashboard/. Root authentication uses Clerk hash routing so authentication steps stay on the root page; legacy /sign-in links still work. Unknown app paths render a bilingual 404 with the remembered language/theme and a recovery link to home or the workspace. Clerk owns its nested sign-in/sign-up callback routes.
 
 Beta follow-up, 2026-10-13: footer credits Eljhon Satsat / 羅俊豪 and describes possible beta issues in the selected language. Task forms use an explicit email-reminder checkbox plus a days-before input defaulting to 1, with a notice that saving and syncing is required. Capture the workspace first, then show the report form with its retained screenshot preview. Keep removal/review controls and the private-data disclosure.

@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {appPath,routerPath,isAccountPath} from './app-routes.ts';
+import {appPath,routerPath,isAccountPath,routerBase} from './app-routes.ts';
+import {matchRoutes} from 'react-router';
 
 test('account routes retain subpath exactly once and preserve callback parameters',()=>{
   const base='/student-dashboard/';
@@ -19,4 +20,9 @@ test('unknown workspace routes show 404 while managed authentication subroutes r
  for(const path of ['/','/dashboard','/onboarding','/sign-in','/sign-up','/sign-in/factor-one','/sign-up/verify-email-address'])assert.equal(isAccountPath(path),true);
  for(const path of ['/missing','/dashboard/missing','/sign-in-other','/sign-up-other'])assert.equal(isAccountPath(path),false);
  assert.equal(appPath('/student-dashboard/','/'),'/student-dashboard/');
+});
+
+test('the hosted root matches with or without a trailing slash',()=>{
+ for(const path of ['/student-dashboard','/student-dashboard/'])assert.ok(matchRoutes([{path:'/'}],path,routerBase('/student-dashboard/')));
+ assert.ok(matchRoutes([{path:'/'}],'/',routerBase('/')));
 });

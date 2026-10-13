@@ -13,7 +13,7 @@ export function Dropdown({label,icon,active=false,children}:{label:string;icon?:
     if((e.key==='ArrowDown'||e.key==='ArrowUp')&&e.target===root.current?.querySelector('.dropdown-trigger')){e.preventDefault();setOpen(true);setTimeout(()=>root.current?.querySelector<HTMLButtonElement>('.navigation-menu button')?.focus(),0);}
   }} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node))setOpen(false);}}>
     <button type="button" className={`select-trigger dropdown-trigger ${active?'active':''}`} aria-label={label} aria-haspopup="dialog" aria-expanded={open} aria-controls={id} onClick={()=>setOpen(!open)}>{icon}<span>{label}</span><ChevronDown size={16} aria-hidden="true"/></button>
-    {open&&<div id={id} className="select-menu navigation-menu" role="dialog" aria-label={label} onClick={e=>{const button=(e.target as Element).closest('button');if(button&&!button.closest('summary')&&!button.matches('[role=combobox],[role=option]'))dismiss();}}>{children}</div>}
+    {open&&<div id={id} data-lenis-prevent className="select-menu navigation-menu" role="dialog" aria-label={label} onClick={e=>{const button=(e.target as Element).closest('button');if(button&&!button.closest('summary')&&!button.matches('[role=combobox],[role=option]'))dismiss();}}>{children}</div>}
   </div>;
 }
 
@@ -59,7 +59,7 @@ export function Select({search,...props}:React.SelectHTMLAttributes<HTMLSelectEl
       if(e.key==='Tab')setOpen(false);
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();setOpen(true);setTimeout(()=>root.current?.querySelector<HTMLButtonElement>('[role=option][aria-selected=true]')?.focus(),0);}
     }}>{options.find(o=>o.value===current)?.text ?? options[0]?.text}<ChevronDown size={16}/></button>
-    {open && <div className={`select-menu ${search?'searchable-menu':''}`}>
+    {open && <div data-lenis-prevent className={`select-menu ${search?'searchable-menu':''}`}>
       {search&&<div className="select-search"><input ref={searchInput} type="search" aria-label={search.label} aria-controls={id} value={query} maxLength={120} placeholder={search.placeholder} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{
         if(e.nativeEvent.isComposing)return;
         if(e.key==='Escape'){e.preventDefault();e.stopPropagation();dismiss();}

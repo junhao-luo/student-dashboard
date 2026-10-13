@@ -12,7 +12,7 @@ import {LegalPages} from './Legal';
 import {LocalWorkspaceProvider,LegacyImport} from './LocalWorkspace';
 
 import {StudentProfileForm} from './StudentProfileForm';
-import {appPath,routerPath,isAccountPath} from './app-routes';
+import {appPath,routerPath,isAccountPath,routerBase} from './app-routes';
 import {normalizeStudentProfile,type StudentProfile as Profile,type StudentProfileInput} from './student-profile';
 
 const publicKey=import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string|undefined;
@@ -26,7 +26,7 @@ const PreferencesContext=createContext<{onLanguageChange:(lang:'en'|'zh')=>void;
 const accountAppearance=(dark:boolean)=>({variables:{colorPrimary:dark?'#a9d5ca':'#235d54',colorBackground:dark?'#242c2f':'#ffffff',colorForeground:dark?'#e8eeee':'#293237',fontFamily:'Geist Variable, sans-serif',borderRadius:'10px'}});
 
 export default function AccountBoundary(props:{zh:boolean;dark:boolean;children:ReactNode;onLanguageChange:(lang:'en'|'zh')=>void;onAppearanceChange:(dark:boolean)=>void}){
-  return <PreferencesContext.Provider value={props}><BrowserRouter basename={appBase}><Providers {...props}/></BrowserRouter></PreferencesContext.Provider>;
+  return <PreferencesContext.Provider value={props}><BrowserRouter basename={routerBase(appBase)}><Providers {...props}/></BrowserRouter></PreferencesContext.Provider>;
 }
 function Providers({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactNode}){
   const navigate=useNavigate();

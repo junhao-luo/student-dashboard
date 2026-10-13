@@ -2,6 +2,8 @@ export function appPath(base:string,path:string):string {
   return `${base.replace(/\/$/,'')}${path}`;
 }
 
+export const routerBase = (base:string) => base.replace(/\/$/,'') || '/';
+
 export function isAccountPath(path:string):boolean {
   return ['/', '/dashboard', '/onboarding', '/sign-in', '/sign-up'].includes(path)
     || path.startsWith('/sign-in/') || path.startsWith('/sign-up/');

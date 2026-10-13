@@ -14,7 +14,7 @@ for(const mode of ['anonymous','forged-token']){
   }catch(error){
    const message=String(error);
    // Network failures do not demonstrate authentication enforcement.
-   const denied=message.includes('SIGN_IN_REQUIRED')||/InvalidAuthHeader|Unauthenticated|invalid.*JWT|JWT.*invalid|Invalid token|could not authenticate|could not be decoded/i.test(message);
+   const denied=error?.data==='SIGN_IN_REQUIRED'||message.includes('SIGN_IN_REQUIRED')||/InvalidAuthHeader|Unauthenticated|invalid.*JWT|JWT.*invalid|Invalid token|could not authenticate|could not be decoded/i.test(message);
    console.log(`${mode} ${name}: ${denied?'DENIED':'INCONCLUSIVE'}`);
    if(!denied)failed=true;
   }

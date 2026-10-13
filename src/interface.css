@@ -311,3 +311,20 @@ h1 {font-size:30px;letter-spacing:-.8px;}
 .not-found{padding:32px 0;max-width:520px;}
 .not-found .eyebrow{font-size:48px;color:var(--accent);margin:0 0 16px;}
 .not-found-home{display:inline-flex;align-items:center;margin-top:20px;padding:12px 20px;min-height:44px;border-radius:10px;background:var(--accent);color:var(--surface);text-decoration:none;font-weight:600;}
+html:has(dialog[open]),body:has(dialog[open]){overflow:hidden;}
+dialog,.select-menu{overscroll-behavior:contain;}
+.course-back{display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;background:transparent;border:1px solid var(--border);font-size:13px;min-height:44px;}
+.calendar-pdf{border-top:1px solid var(--border);padding:24px 0;margin:20px 0;min-width:0;}
+.calendar-pdf .section-head{flex-wrap:wrap;gap:12px;}
+.calendar-pdf h2{font-size:18px;margin:0;}
+.calendar-pdf a{color:var(--accent);font-size:13px;}
+.calendar-pdf-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0;font-size:13px;}
+.calendar-pdf-controls button{min-height:44px;font-size:13px;}
+.calendar-pdf-page{width:100%;max-width:1100px;min-height:120px;margin:0 auto;}
+.calendar-pdf-page canvas{max-width:100%;background:white;}
+.class-now{display:flex;align-items:center;gap:32px;flex-wrap:wrap;padding:20px 0;margin-bottom:16px;border-bottom:1px solid var(--border);}
+.live-clock{display:flex;align-items:center;gap:12px;}
+.live-clock time{display:block;font-size:28px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+.live-clock small,.current-class small,.current-class span{display:block;color:var(--muted);font-size:12px;line-height:1.6;}
+.current-class{flex:1;min-width:180px;}
+.current-class strong{display:block;font-size:14px;line-height:1.6;}
