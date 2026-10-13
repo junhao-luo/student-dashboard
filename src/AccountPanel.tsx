@@ -5,14 +5,14 @@ import {ui} from '@clerk/ui';
 import {ConvexReactClient,useAction,useConvexAuth} from 'convex/react';
 import {ConvexProviderWithClerk} from 'convex/react-clerk';
 import {makeFunctionReference} from 'convex/server';
-import {BrowserRouter,Navigate,useLocation,useNavigate} from 'react-router';
+import {BrowserRouter,Link,Navigate,useLocation,useNavigate} from 'react-router';
 import {GraduationCap,UserRound,LogOut,BookOpen,CalendarDays,FileText} from 'lucide-react';
 import {LoadingState,Dropdown,Select} from './Interface';
 import {LegalPages} from './Legal';
 import {LocalWorkspaceProvider,LegacyImport} from './LocalWorkspace';
 
 import {StudentProfileForm} from './StudentProfileForm';
-import {appPath,routerPath} from './app-routes';
+import {appPath,routerPath,isAccountPath,routerBase} from './app-routes';
 import {normalizeStudentProfile,type StudentProfile as Profile,type StudentProfileInput} from './student-profile';
 
 const publicKey=import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string|undefined;
@@ -26,7 +26,7 @@ const PreferencesContext=createContext<{onLanguageChange:(lang:'en'|'zh')=>void;
 const accountAppearance=(dark:boolean)=>({variables:{colorPrimary:dark?'#a9d5ca':'#235d54',colorBackground:dark?'#242c2f':'#ffffff',colorForeground:dark?'#e8eeee':'#293237',fontFamily:'Geist Variable, sans-serif',borderRadius:'10px'}});
 
 export default function AccountBoundary(props:{zh:boolean;dark:boolean;children:ReactNode;onLanguageChange:(lang:'en'|'zh')=>void;onAppearanceChange:(dark:boolean)=>void}){
-  return <PreferencesContext.Provider value={props}><BrowserRouter basename={appBase}><Providers {...props}/></BrowserRouter></PreferencesContext.Provider>;
+  return <PreferencesContext.Provider value={props}><BrowserRouter basename={routerBase(appBase)}><Providers {...props}/></BrowserRouter></PreferencesContext.Provider>;
 }
 function Providers({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactNode}){
   const navigate=useNavigate();
@@ -34,8 +34,8 @@ function Providers({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactNod
   if(!client)return <AuthPage zh={zh} dark={dark}><h1>{zh?'登入設定尚未完成':'Sign-in setup is incomplete'}</h1><p>{zh?'請設定帳號服務後重試。':'Configure the account services before opening the workspace.'}</p></AuthPage>;
   return <ClerkProvider ui={ui} publishableKey={publicKey!} localization={zh?zhTW:enUS}
     routerPush={to=>navigate(routerPath(appBase,to,location.origin))} routerReplace={to=>navigate(routerPath(appBase,to,location.origin),{replace:true})}
-    signInUrl={accountPath('/sign-in')} signUpUrl={accountPath('/sign-up')} signInForceRedirectUrl={accountPath('/dashboard')} signUpForceRedirectUrl={accountPath('/onboarding')}
-    afterSignOutUrl={accountPath("/sign-in")} appearance={appearance}>
+    signInUrl={accountPath('/')} signUpUrl={accountPath('/sign-up')} signInForceRedirectUrl={accountPath('/dashboard')} signUpForceRedirectUrl={accountPath('/onboarding')}
+    afterSignOutUrl={accountPath("/")} appearance={appearance}>
     <ConvexProviderWithClerk client={client} useAuth={useAuth}><SessionGate zh={zh} dark={dark}>{children}</SessionGate></ConvexProviderWithClerk>
   </ClerkProvider>;
 }
@@ -43,11 +43,13 @@ function SessionGate({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactN
   const {isLoaded,user}=useUser();
   const {isAuthenticated,isLoading}=useConvexAuth();
   const {pathname}=useLocation();
+  if(!isAccountPath(pathname))return <AuthPage zh={zh} dark={dark}><section className="not-found"><p className="eyebrow">404</p><h1>{zh?'找不到這個頁面':'Page not found'}</h1><p>{zh?'連結可能已變更，或網址輸入有誤。':'The link may have changed, or the address may be mistyped.'}</p><Link className="not-found-home" to={user?'/dashboard':'/'}>{user?(zh?'返回工作區':'Back to workspace'):(zh?'返回首頁':'Back to home')}</Link></section></AuthPage>;
   if(!isLoaded)return <LoadingState zh={zh}/>;
   if(!user){
-    if(pathname==='/sign-up'||pathname.startsWith('/sign-up/'))return <AuthPage zh={zh} dark={dark} hero><SignUp key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="path" path={accountPath('/sign-up')} signInUrl={accountPath('/sign-in')} forceRedirectUrl={accountPath('/onboarding')}/></AuthPage>;
+    if(pathname==='/')return <AuthPage zh={zh} dark={dark} hero><SignIn key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="hash" signUpUrl={accountPath('/sign-up')} forceRedirectUrl={accountPath('/dashboard')}/></AuthPage>;
+    if(pathname==='/sign-up'||pathname.startsWith('/sign-up/'))return <AuthPage zh={zh} dark={dark} hero><SignUp key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="path" path={accountPath('/sign-up')} signInUrl={accountPath('/')} forceRedirectUrl={accountPath('/onboarding')}/></AuthPage>;
     if(pathname==='/sign-in'||pathname.startsWith('/sign-in/'))return <AuthPage zh={zh} dark={dark} hero><SignIn key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="path" path={accountPath('/sign-in')} signUpUrl={accountPath('/sign-up')} forceRedirectUrl={accountPath('/dashboard')}/></AuthPage>;
-    return <Navigate to="/sign-in" replace/>;
+    return <Navigate to="/" replace/>;
   }
   if(isLoading)return <LoadingState zh={zh} label={zh?'正在驗證登入…':'Verifying sign-in…'}/>;
   if(!isAuthenticated)return <AuthPage zh={zh} dark={dark}><h1>{zh?'無法連接帳號':'Could not connect your account'}</h1><p role="alert">{zh?'後端尚未確認登入，請檢查連線後重試。':'The backend could not confirm sign-in. Check your connection and retry.'}</p><button onClick={()=>location.reload()}>{zh?'重試':'Retry'}</button><SignOutButton><button>{zh?'登出':'Sign out'}</button></SignOutButton></AuthPage>;

@@ -1,5 +1,7 @@
 # Product requirements
 
+Latest beta follow-ups, 2026-10-13: direct hero/sign-in at the app root with or without its trailing slash; custom bilingual 404/recovery; isolated dropdown/dialog/background scrolling; previews of the supplied 115 academic-year and 115-1 registration PDFs above Google Calendar; flat sidebar course choices and a Back to all courses button; live Taipei-time clock and current weekly class on Overview; success confirmation dialogs for contact/bug submissions. Reminders and the earlier editable timetable release are installed in production through approved PR #6; these frontend follow-ups are staged for the next tested release.
+
 Beta follow-up, 2026-10-13: footer credits Eljhon Satsat in English and 羅俊豪 in Traditional Chinese, with a visible beta-issues notice. Bug reporting captures the current workspace before opening its dialog. Assignment/exam forms offer opt-in school-email reminders, default one day before with a custom whole-day offset from 0–365. Reminders require task synchronization; completing/deleting/disabling a task must synchronize to cancel its pending job. Deployment and delivery evidence is recorded separately.
 
 Support email update, 2026-10-10: complaints, suggestions and bug reports include the reporter's saved name, student ID, department/program, class, derived school email and mobile number. Bug emails attach the retained screenshot and diagnostics; diagnostics also appear in the email body. Reporters can still remove either attachment before submitting.

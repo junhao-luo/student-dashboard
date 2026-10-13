@@ -1,5 +1,7 @@
 import { DataExport } from "./DataExport";
 import {ContactPage,BugReporter} from './Support';
+import {ClassNow} from './ClassNow';
+import {SmoothScroll} from './SmoothScroll';
 import { TaskViews } from "./TaskViews";
 import type { Folder } from "./domain";
 import { LegalPages } from "./Legal";
@@ -20,6 +22,7 @@ import {
   Menu,
   X,
   Mail,
+  ArrowLeft,
 } from "lucide-react";
 import {
   validateCourse,
@@ -46,32 +49,13 @@ const AccountBoundary=lazy(()=>import('./AccountPanel'));
 const AccountPanel=lazy(()=>import('./AccountPanel').then(module=>({default:module.AccountPanel})));
 const AccountMenu=lazy(()=>import('./AccountPanel').then(module=>({default:module.AccountMenu})));
 const AccountSignOut=lazy(()=>import('./AccountPanel').then(module=>({default:module.AccountSignOut})));
+const SchoolCalendarPdfs=lazy(()=>import('./SchoolCalendarPdfs'));
 const PdfImport = lazy(() =>
   import("./PdfImport").then((module) => ({ default: module.PdfImport })),
 );
 import type { ImportedMeeting } from "./pdf-parser";
 import { ResourceLibrary } from "./ResourceLibrary";
-import Lenis from "lenis";
-import "lenis/dist/lenis.css";
 import {useLocation,useNavigate} from 'react-router';
-
-function SmoothScroll({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reducedMotion.matches) return;
-
-    const lenis = new Lenis({
-      autoRaf: true,
-      anchors: true,
-    });
-
-    return () => {
-      lenis.destroy();
-    };
-  }, []);
-
-  return <>{children}</>;
-}
 
 function App({ initial,onPreferences,preferences }: { initial: Workspace | undefined;onPreferences:(lang:'en'|'zh',dark:boolean)=>void;preferences:{lang:'en'|'zh';dark:boolean} }) {
   const {saveWorkspace,removeFiles}=useWorkspaceStorage();
@@ -512,7 +496,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
         </label>
 <button onClick={()=>{setPage("settings");setMobileOpen(false);}}>{t("Settings","設定")}</button></Dropdown>
         <nav aria-label={t("Main navigation", "主要導覽")}>
-          {nav.map(([key, Icon, label]) => (key==='courses'||key==='resources') ? <Dropdown key={key} label={label} icon={<Icon size={19}/>} active={page===key}><button onClick={()=>{setPage(key);if(key==='courses')setSelectedCourse('');else setFolderId('');setMobileOpen(false);}}>{key==='courses'?t('All courses','所有課程'):t('All resources','所有資源')}</button><div className="nav-children">{key==='courses'?activeCourses.map(c=><details key={c.id}><summary><button onClick={e=>{e.preventDefault();const item=e.currentTarget.closest('details');if(item)item.open=!item.open;setSelectedCourse(c.id);setCourseTab('notes');setPage('courses');setMobileOpen(false);}}>{c.name}<span aria-hidden="true" className="menu-chevron">⌄</span></button></summary>{notes.filter(n=>n.courseId===c.id).map(n=><button className="tree-note" key={n.id} onClick={()=>{setSelectedCourse(c.id);setCourseTab('notes');setPage('courses');setMobileOpen(false);setTimeout(()=>document.getElementById('note-'+n.id)?.scrollIntoView({block:'center'}),0);}}>{n.title}</button>)}</details>):renderFolders('')}</div></Dropdown>:<button key={key} aria-current={page===key?'page':undefined} className={page===key?'active':''} onClick={()=>{setPage(key);setMobileOpen(false);}}><Icon size={19}/>{label}</button>)}
+          {nav.map(([key, Icon, label]) => (key==='courses'||key==='resources') ? <Dropdown key={key} label={label} icon={<Icon size={19}/>} active={page===key}><button onClick={()=>{setPage(key);if(key==='courses')setSelectedCourse('');else setFolderId('');setMobileOpen(false);}}>{key==='courses'?t('All courses','所有課程'):t('All resources','所有資源')}</button><div className="nav-children">{key==='courses'?activeCourses.map(c=><button key={c.id} onClick={()=>{setSelectedCourse(c.id);setCourseTab("notes");setPage("courses");setMobileOpen(false);}}>{c.name}</button>):renderFolders('')}</div></Dropdown>:<button key={key} aria-current={page===key?'page':undefined} className={page===key?'active':''} onClick={()=>{setPage(key);setMobileOpen(false);}}><Icon size={19}/>{label}</button>)}
         </nav>
         <div className="sidebar-bottom">
           <button className={page==='contact'?'active':''} aria-label={t('Contact support','聯絡客服')} onClick={()=>{setPage('contact');setMobileOpen(false);}}><Mail size={19}/><span>{t('Contact support','聯絡客服')}</span></button>
@@ -548,10 +532,11 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
         </div>
         <div className="title-row">
           <div>
+            {page==='courses'&&selectedCourse&&<button className="course-back" onClick={()=>{setSelectedCourse('');requestAnimationFrame(()=>document.querySelector<HTMLElement>('#main h1')?.focus());}}><ArrowLeft size={16}/>{t('Back to all courses','返回所有課程')}</button>}
             <p className="eyebrow">
               {t("Semester", "學期")} {semester}
             </p>
-            <h1>{page==='contact'?t('Contact support','聯絡客服'):page==='courses'&&selectedCourse?courseFor(selectedCourse)?.name:nav.find((n) => n[0] === page)?.[2]}</h1>
+            <h1 tabIndex={-1}>{page==='contact'?t('Contact support','聯絡客服'):page==='courses'&&selectedCourse?courseFor(selectedCourse)?.name:nav.find((n) => n[0] === page)?.[2]}</h1>
           </div>
           {page !== "contact" && page !== "settings" && page !== "calendar" && (
             <button
@@ -584,7 +569,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
           )}
         </div>
         {page === "overview" && (
-          <><div className="quick-capture"><button onClick={()=>quick('note')}>{t('New note','新增筆記')}</button><button onClick={()=>quick('assignment')}>{t('New assignment','新增作業')}</button><button onClick={()=>quick('exam')}>{t('New exam','新增考試')}</button></div>
+          <><ClassNow courses={activeCourses} meetings={activeMeetings} zh={lang==='zh'}/><div className="quick-capture"><button onClick={()=>quick('note')}>{t('New note','新增筆記')}</button><button onClick={()=>quick('assignment')}>{t('New assignment','新增作業')}</button><button onClick={()=>quick('exam')}>{t('New exam','新增考試')}</button></div>
             <p className="subtitle">
               {t(
                 "Check your courses and upcoming deadlines.",
@@ -769,7 +754,6 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                     {t("Delete course", "刪除課程")}
                   </button>
                 </div>
-                <button onClick={()=>setSelectedCourse('')}>{t('All courses','所有課程')}</button>
                 <p className="muted">{courseFor(selectedCourse)?.code} · {courseFor(selectedCourse)?.instructor} · {courseFor(selectedCourse)?.credits} {t('credits','學分')} · {courseFor(selectedCourse)?.room}</p>
                 <div className="view-tabs">{[['notes',t('Notes','筆記')],['tasks',t('Assignments & exams','作業與考試')],['schedule',t('Schedule','上課時間')],['resources',t('Resources','資源')]].map(([id,label])=><button key={id} aria-pressed={courseTab===id} onClick={()=>setCourseTab(id)}>{label}</button>)}</div>
                 {courseTab==='tasks'&&<><button onClick={()=>openForm('task')}>{t('Add deadline','新增期限')}</button><TaskViews tasks={tasks} courses={courses.filter(c=>c.id===selectedCourse)} onChange={setTasks} onEdit={editTask} zh={lang==='zh'}/></>}
@@ -859,6 +843,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
         )}
         {page === "calendar" && (
           <section className="panel school-calendar">
+            <Suspense fallback={<LoadingState compact zh={lang==='zh'}/>}><SchoolCalendarPdfs zh={lang==='zh'}/></Suspense>
             <div className="section-head">
               <h2>逢甲大學－基礎行事曆</h2>
               <span className="muted">Asia/Taipei</span>
@@ -1101,7 +1086,7 @@ function Modal({
     ref.current?.showModal();
   }, []);
   return (
-    <dialog ref={ref} onCancel={close} aria-labelledby="dialog-title">
+    <dialog ref={ref} data-lenis-prevent onCancel={close} aria-labelledby="dialog-title">
       <div className="section-head">
         <h2 id="dialog-title">{title}</h2>
         <button onClick={close} aria-label="Close">
@@ -1127,7 +1112,7 @@ function AccountRoot(){
   useEffect(()=>{let active=true;void Promise.all([loadInterfacePreferences(),loadLegacyPreferences()]).then(([saved,value])=>{if(active){const settings=saved??value;if(settings)setPreferences({lang:settings.lang,dark:settings.dark});setReady(true);}}).catch(()=>{if(active)setReady(true);});return()=>{active=false;};},[]);
   if(!ready)return <LoadingState/>;
   const changeLandingLanguage=(lang:'en'|'zh')=>{
-    if(location.pathname.startsWith(`${import.meta.env.BASE_URL}sign-`)){
+    if(document.querySelector('.auth-landing')){
       // Initialize the managed auth UI with one locale; dynamic locale/theme updates can race.
       void saveInterfacePreferences({lang,dark:preferences.dark}).then(()=>location.reload()).catch(()=>onPreferences(lang,preferences.dark));
     }else onPreferences(lang,preferences.dark);

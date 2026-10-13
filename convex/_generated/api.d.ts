@@ -15,6 +15,7 @@ import type * as courses from "../courses.js";
 import type * as meetings from "../meetings.js";
 import type * as model from "../model.js";
 import type * as profiles from "../profiles.js";
+import type * as reminders from "../reminders.js";
 import type * as support from "../support.js";
 import type * as tasks from "../tasks.js";
 
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   meetings: typeof meetings;
   model: typeof model;
   profiles: typeof profiles;
+  reminders: typeof reminders;
   support: typeof support;
   tasks: typeof tasks;
 }>;

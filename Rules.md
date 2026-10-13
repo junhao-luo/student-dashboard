@@ -1,5 +1,7 @@
 # Rules
 
+Frontend follow-ups, 2026-10-13: clock ticks must not mutate/save/sync academic state. Public PDF calendars are display-only and must not create tasks or reminders. Keep success copy accurate: provider acceptance does not prove inbox delivery. Unknown app URLs must not silently become a workspace page. Nested scroll areas must prevent event chaining to background layers, and all dialogs retain keyboard focus/dismissal behavior.
+
 Reminder safeguards, 2026-10-13: email submission functions remain internal. Only server-validated task writes create owner-scoped jobs; recipient is the generated profile school email, never an arbitrary client address. Stale generations, completed/deleted/disabled jobs, absent profiles, exhausted budgets and expired reminders do not send. Retry count and time are bounded; provider idempotency payload stays stable. An already-submitting email cannot be recalled, and unsynced edits cannot cancel server jobs. Do not claim inbox delivery from a successful build or provider acceptance. Screenshot capture must finish before opening the report dialog and retains existing private-element exclusions and user review/removal.
 
 Support email update, 2026-10-10: include only the authenticated reporter's six saved student-profile fields in both contact and bug emails. Disclose this transfer in both forms and privacy copy. Never accept caller-supplied identity/profile fields or include another student's record. Profile details are separate from the bounded diagnostic log.
