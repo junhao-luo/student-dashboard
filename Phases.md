@@ -79,3 +79,11 @@ Student ID validation tightened in the shared client/server profile path and nat
 ## Empty timetable import — 2026-10-13
 
 If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
+
+## Academic feature handoff — 2026-10-13
+
+Feature implementation saved on codex/academic-workspace-features. Earlier build and 55 tests passed before final cleanup; user requested no more tests now. Next priority: remaining persistence/security/mobile/browser checks in handoff.md, then tested release if requested.
+
+## Resumed verification — 2026-10-13
+
+Completed the deferred feature verification. Added a cloud-reload regression preserving matching local task attachments while excluding them from uploads, plus legacy optional-field clearing checks. Fixed custom PowerPoint slide order and namespaced XLSX shared strings. Resource operations lock controls while busy; leaving a view during upload cancels the write/cleans its new blob, and attachment removal uses current task state. Updated privacy copy for local file previews and assignment details. Browser checks passed for credits/status/calendar details, descriptions/attachments, DOCX/PPTX/PDF opening and new tabs, nested folder move/delete, renamed downloads, embedded images, XLSX, safe error fallback, Escape/focus, 320/390/768/1440 and Chinese dark UI. Office previews remain content previews; exact original layout and physical Safari are unverified. No real records or emails changed. Work remains on codex/academic-workspace-features, without a main merge/public release. Final build readback below.

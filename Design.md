@@ -75,3 +75,15 @@ Student ID is an eight-character field with uppercase keyboard capitalization an
 ## Empty timetable import — 2026-10-13
 
 If the selected semester has no existing class meetings, skip the merge/replace selector and its explanation. Keep editable review and save; use non-destructive import. When that semester already has meetings, keep both modes. Meetings in other semesters do not trigger the choice. Browser fixture using the supplied PDF verified both paths and mock save modes; no real records were saved. Student-ID native validation and mock save also passed.
+
+## Academic feature handoff — 2026-10-13
+
+Credit totals appear on Overview/all-courses. Assignments use a semantic table and Not started/In progress/Complete dropdown; calendar entries open a native detail popup. Resources use course-folder tiles and current-folder uploads with breadcrumbs. PDF/Office previews have local new-tab/download controls; Office content layout may differ. Final Chinese/dark/320px review deferred.
+
+## Resumed verification — 2026-10-13
+
+Completed the deferred feature verification. Added a cloud-reload regression preserving matching local task attachments while excluding them from uploads, plus legacy optional-field clearing checks. Fixed custom PowerPoint slide order and namespaced XLSX shared strings. Resource operations lock controls while busy; leaving a view during upload cancels the write/cleans its new blob, and attachment removal uses current task state. Updated privacy copy for local file previews and assignment details. Browser checks passed for credits/status/calendar details, descriptions/attachments, DOCX/PPTX/PDF opening and new tabs, nested folder move/delete, renamed downloads, embedded images, XLSX, safe error fallback, Escape/focus, 320/390/768/1440 and Chinese dark UI. Office previews remain content previews; exact original layout and physical Safari are unverified. No real records or emails changed. Work remains on codex/academic-workspace-features, without a main merge/public release. Final build readback below.
+
+## Settings About — 2026-10-13
+
+Added AboutSystem beneath export in Settings: package.json version is injected by Vite as __APP_VERSION__, with beta notice and dated collapsible bilingual changelog. No arbitrary version bump or dependency added. Frontend type/build passed; browser verified English, Traditional Chinese/dark, keyboard summary expansion and 320px width. Proof .playwright-cli/settings-about.png. Existing dependency module-directive warnings remain; no backend or public deployment changed. Maintain the displayed version in package.json and changelog entries in src/AboutSystem.tsx.

@@ -108,7 +108,7 @@ export function accountStorage(account: string) {
         if(existing&&['courses','notes','tasks','meetings','resources','folders'].some(field=>(existing[field as keyof Workspace] as unknown[]|undefined)?.length))throw Error('Import requires an empty account workspace.');
         const value=checkedWorkspace(await records.get('current'));
         if(!value)throw Error('Previous workspace is unavailable.');
-        const ids=new Set([...value.resources.flatMap(r=>r.fileId?[r.fileId]:[]),...value.notes.flatMap(n=>[
+        const ids=new Set([...value.resources.flatMap(r=>r.fileId?[r.fileId]:[]),...value.tasks.flatMap(t=>(t.attachments??[]).map(a=>a.fileId)),...value.notes.flatMap(n=>[
           ...(n.attachments??[]).map(a=>a.fileId),
           ...[...(n.body+' '+(n.blocks??'')).matchAll(/local-file:([a-zA-Z0-9-]+)/g)].map(match=>match[1]),
         ])]);

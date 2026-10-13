@@ -10,7 +10,7 @@ export async function exportWorkspace(workspace:Workspace, readFile:(id:string)=
   const entries:Record<string,Uint8Array>={};
   const files=new Map<string,{path:string;name:string;size:number}>();
   const references=[...workspace.resources.filter(r=>r.fileId).map(r=>({id:r.fileId!,name:r.originalName||r.title})),
-    ...workspace.notes.flatMap(n=>(n.attachments||[]).map(a=>({id:a.fileId,name:a.name})))];
+    ...workspace.notes.flatMap(n=>(n.attachments||[]).map(a=>({id:a.fileId,name:a.name}))),...workspace.tasks.flatMap(t=>(t.attachments||[]).map(a=>({id:a.fileId,name:a.name})))];
   if(references.length>10000||workspace.notes.length>10000)throw Error('Export contains too many files or notes.');
   let total=0;
   function add(path:string,bytes:Uint8Array){total+=bytes.byteLength;if(total>200*1024*1024)throw Error('Export exceeds the 200 MB processing limit.');entries[path]=bytes;}
