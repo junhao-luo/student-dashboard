@@ -30,3 +30,13 @@ graphify-out/
 # Personal imports and local backups must not be published.
 private-imports/
 private-backups/
+
+# Local demo exports and one-off browser/development artifacts.
+/output/
+/*-check.js
+/workspace-review.js
+/edit-main.mjs
+/edit-planner.mjs
+/update-plan.mjs
+/*preview.png
+/resend-dns-status.jpg

@@ -1,5 +1,7 @@
 # CourseDock
 
+One-off root browser helpers mentioned below are local, Git-ignored development artifacts. Demo exports and preview screenshots are also kept locally; the reusable automated tests remain in `src/` and `convex/`.
+
 A student planner for Feng Chia University. CourseDock is a working name and can be changed in Settings. This is a local development preview.
 
 The app uses an edge-to-edge workspace with a stable scrolling sidebar. Courses & notes and Resources expand directly from their menu buttons. Course pages contain notes, deadlines, schedule, and resources. Notes stay under courses. The overview provides quick capture and recent notes. Deadlines have week/upcoming/calendar/all views and course/completion filters. Resource folders can contain subfolders, with icons, breadcrumbs, rename/move actions, and uploads into the current folder. Only empty folders can be deleted. Sidebar collapse, current folder, and course tab survive refresh. Workspace browser scripts require a disposable browser signed into a test account with a completed profile. Use auth-pages-check.js for unsigned account-route checks.
