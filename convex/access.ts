@@ -5,6 +5,10 @@ import type {GenericId} from 'convex/values';
 export async function owner(ctx:Pick<ReadCtx,'auth'>|Pick<ActionCtx,'auth'>){
   const identity=await ctx.auth.getUserIdentity();
   if(!identity)throw new ConvexError('SIGN_IN_REQUIRED');
+  // Same production Clerk instance after its domain change. Keep existing record ownership.
+  // Only the server-verified new issuer and its exact subject may use this alias.
+  if(identity.issuer==='https://clerk.coursedock.app'&&identity.tokenIdentifier===`${identity.issuer}|${identity.subject}`)
+    return `https://clerk.eljhon.me|${identity.subject}`;
   return identity.tokenIdentifier;
 }
 export async function requireProfile(ctx:ReadCtx|WriteCtx,id:string){

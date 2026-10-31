@@ -11,6 +11,18 @@ const ref=(name:string)=>makeFunctionReference<'action'>(name);
 const user=(t:ReturnType<typeof convexTest>,id:string)=>t.withIdentity({subject:id,issuer:'https://test-issuer.example',tokenIdentifier:`https://test-issuer.example|${id}`});
 const academic={semesters:['115-1'],courses:[{...course,id:'local-course'}],tasks:[{id:'local-task',courseId:'local-course',title:'Exam',kind:'exam',due:'2026-10-11T02:00:00.000Z',done:false,reminderDays:1}],meetings:[{id:'local-meeting',courseId:'local-course',day:1,start:'09:10',end:'10:00',room:'A101'}]};
 
+test('production domain migration retains same-subject records and isolates other users',async()=>{
+ const t=convexTest(schema,modules);
+ const old=t.withIdentity({subject:'user_A',issuer:'https://clerk.eljhon.me',tokenIdentifier:'https://clerk.eljhon.me|user_A'});
+ const migrated=t.withIdentity({subject:'user_A',issuer:'https://clerk.coursedock.app',tokenIdentifier:'https://clerk.coursedock.app|user_A'});
+ const other=t.withIdentity({subject:'user_B',issuer:'https://clerk.coursedock.app',tokenIdentifier:'https://clerk.coursedock.app|user_B'});
+ await old.action(ref('profiles:save'),{profile});
+ await old.action(ref('academic:save'),{revision:0,requestId:'migration',data:academic});
+ expect((await migrated.action(ref('profiles:get'),{})).studentId).toBe(profile.studentId);
+ expect((await migrated.action(ref('academic:get'),{})).data).toEqual(academic);
+ expect(await other.action(ref('profiles:get'),{})).toBeNull();
+});
+
 test('every public business endpoint denies anonymous identity and exhausted shared budgets',async()=>{
  const t=convexTest(schema,modules),a=user(t,'A');await a.action(ref('profiles:save'),{profile});
  const courseId=await a.action(ref('courses:save'),{course});
