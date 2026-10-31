@@ -48,7 +48,7 @@ test('email sender and recipient are fixed server-side, retries are idempotent a
   await t.action(action('reminders:send'),{id:job._id,generation:job.generation});
   await t.action(action('reminders:send'),{id:job._id,generation:job.generation});
   expect(fetcher).toHaveBeenCalledTimes(2);
-  const mail=JSON.parse(fetcher.mock.calls[0][1].body);expect(mail.from).toBe('CourseDock <reminder@eljhon.me>');expect(mail.to).toEqual(['d1234567@o365.fcu.edu.tw']);expect(mail.text).toContain('Synthetic exam');expect(mail.text).toContain('Asia/Taipei');expect(mail.html).toBeUndefined();
+  const mail=JSON.parse(fetcher.mock.calls[0][1].body);expect(mail.from).toBe('CourseDock <reminder@coursedock.app>');expect(mail.to).toEqual(['d1234567@o365.fcu.edu.tw']);expect(mail.text).toContain('Synthetic exam');expect(mail.text).toContain('Asia/Taipei');expect(mail.html).toBeUndefined();
   expect(fetcher.mock.calls[1][1].headers['Idempotency-Key']).toBe(fetcher.mock.calls[0][1].headers['Idempotency-Key']);
   expect((await t.run(ctx=>ctx.db.get(job._id)))?.state).toBe('sent');
  }finally{vi.unstubAllGlobals();vi.unstubAllEnvs();}

@@ -51,7 +51,7 @@ test('support reserves concurrent quota, fixes destination/reply address, hides 
   const result=await Promise.allSettled(Array.from({length:5},(_,i)=>a.action(ref('support:submit'),{...report,requestId:`12345678-1234-1234-1234-123456789ab${i}`})));
   expect(result.filter(r=>r.status==='fulfilled')).toHaveLength(3);expect(fetcher).toHaveBeenCalledTimes(3);
   for(const r of result)if(r.status==='rejected')expect(String(r.reason)).toContain('SUPPORT_LIMIT_REACHED');
-  const mail=JSON.parse(fetcher.mock.calls[0][1].body);expect(mail.to).toEqual(['support@eljhon.me']);expect(mail.reply_to).toBe('d1234567@o365.fcu.edu.tw');expect(mail.html).toBeUndefined();
+  const mail=JSON.parse(fetcher.mock.calls[0][1].body);expect(mail.to).toEqual(['support@coursedock.app']);expect(mail.reply_to).toBe('d1234567@o365.fcu.edu.tw');expect(mail.html).toBeUndefined();
   expect(fetcher.mock.calls[0][1].headers['Idempotency-Key']).toMatch(/^support\/[a-f0-9]{64}$/);
   const b=t.withIdentity({subject:'B'});await b.action(ref('profiles:save'),{profile});fetcher.mockResolvedValue(new Response('private provider details',{status:403}));
   await expect(b.action(ref('support:submit'),report)).rejects.toThrow('SUPPORT_DELIVERY_FAILED');
