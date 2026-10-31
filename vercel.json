@@ -9,7 +9,7 @@
     {"source":"/student-dashboard","destination":"/legacy.html"},
     {"source":"/student-dashboard/:path*","destination":"/legacy.html"},
     {
-      "source": "/(.*)",
+      "source": "/((?!student-dashboard(?:/|$)|legacy\\.html$|assets/|favicon\\.svg$).*)",
       "destination": "/index.html"
     }
   ],
