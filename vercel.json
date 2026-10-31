@@ -4,10 +4,7 @@
   "buildCommand": "npm run build:hosting",
   "outputDirectory": "dist",
   "rewrites": [
-    {"source":"/student-dashboard/assets/:path*","destination":"/assets/:path*"},
-    {"source":"/student-dashboard/favicon.svg","destination":"/favicon.svg"},
-    {"source":"/student-dashboard","destination":"/legacy.html"},
-    {"source":"/student-dashboard/:path*","destination":"/legacy.html"},
+    {"source":"/student-dashboard/:path*","destination":"/student-dashboard/index.html"},
     {
       "source": "/((?!student-dashboard(?:/|$)|legacy\\.html$|assets/|favicon\\.svg$).*)",
       "destination": "/index.html"
