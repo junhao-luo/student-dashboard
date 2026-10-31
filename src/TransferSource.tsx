@@ -1,0 +1,9 @@
+import {useState} from 'react';
+import {accountStorage} from './storage';
+import {exportWorkspace,downloadBlob} from './export';
+export function TransferSource(){
+ const [owned,setOwned]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
+ const account=new URLSearchParams(location.hash.slice(1)).get('transfer');
+ const valid=!!account&&/^https:\/\/cheery-dachshund-214\.convex\.cloud\|user_[A-Za-z0-9]+$/.test(account);
+ return <main className="local-import-page"><h1>Move your workspace / 移轉工作區</h1><p>Open Settings on coursedock.app and follow “Open previous workspace” using the browser and device that holds your notes and files. This page downloads local data only. It does not contact the old authentication service or upload your backup.</p><p>請在存有筆記與檔案的原瀏覽器及裝置，登入 coursedock.app，在設定按「開啟舊工作區」。此頁只會下載本機資料，不會上傳備份。</p>{valid?<><label><input type="checkbox" checked={owned} onChange={e=>setOwned(e.target.checked)}/>This browser workspace belongs to my account. / 此瀏覽器工作區屬於我的帳號。</label><button disabled={!owned||busy} onClick={async()=>{setBusy(true);setMessage('');try{const storage=accountStorage(account!);const workspace=await storage.loadWorkspace();if(!workspace)throw Error('No local workspace for this account. Use the original browser and device. / 此帳號沒有本機工作區，請使用原瀏覽器及裝置。');const bytes=await exportWorkspace(workspace,storage.getFile);downloadBlob(new Blob([new Uint8Array(bytes).buffer],{type:'application/zip'}),'coursedock-transfer.zip');setMessage('Backup downloaded. Restore it in Settings on coursedock.app. Originals remain here. / 備份已下載，請至新網站設定還原，原始資料仍保留於此。');}catch(error){setMessage(error instanceof Error?error.message:'Could not export. / 無法匯出。');}finally{setBusy(false);}}}>Download transfer ZIP / 下載移轉 ZIP</button></>:<a href="https://coursedock.app/dashboard">Open CourseDock Settings / 開啟 CourseDock 設定</a>}<p role="status">{message}</p></main>;
+}

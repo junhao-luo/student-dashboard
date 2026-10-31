@@ -59,6 +59,7 @@ export function accountStorage(account: string) {
   const key = ['account',account];
   const fileKey = (id:string) => ['account',account,id];
   return {
+    transferSourceUrl(){return `https://eljhon.me/student-dashboard/#transfer=${encodeURIComponent(account)}`;},
     async restoreBackup(value:Workspace,attachments:Map<string,File>){
       const tx=(await database).transaction(['workspace','files'],'readwrite');
       try{
