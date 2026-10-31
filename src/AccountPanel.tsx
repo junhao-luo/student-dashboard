@@ -17,7 +17,7 @@ import {normalizeStudentProfile,type StudentProfile as Profile,type StudentProfi
 
 const publicKey=import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string|undefined;
 const endpoint=import.meta.env.VITE_CONVEX_URL as string|undefined;
-const appBase=import.meta.env.BASE_URL;
+const appBase=location.pathname==='/student-dashboard'||location.pathname.startsWith('/student-dashboard/')?'/student-dashboard/':'/';
 const accountPath=(path:string)=>appPath(appBase,path);
 const configured=!!publicKey?.startsWith('pk_')&&!!endpoint?.match(/^https:\/\/[a-z0-9-]+\.convex\.cloud$/);
 const client=configured?new ConvexReactClient(endpoint!):null;

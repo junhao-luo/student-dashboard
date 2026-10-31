@@ -59,6 +59,20 @@ export function accountStorage(account: string) {
   const key = ['account',account];
   const fileKey = (id:string) => ['account',account,id];
   return {
+    async restoreBackup(value:Workspace,attachments:Map<string,File>){
+      const tx=(await database).transaction(['workspace','files'],'readwrite');
+      try{
+        const records=tx.objectStore('workspace'),files=tx.objectStore('files');
+        const existing=await records.get(key);
+        if(existing&&(existing.notes?.length||existing.resources?.length||existing.folders?.length||existing.tasks?.some((task:Task)=>task.attachments?.length)))throw Error('Destination contains local records.');
+        if((await files.getAllKeys(IDBKeyRange.bound(['account',account],['account',account,[]]))).length)throw Error('Destination contains files.');
+        if(existing)await records.put(existing,['before-domain-transfer',account]);
+        for(const [id,file] of attachments)await files.put(file,fileKey(id));
+        await records.put(value,key);
+        await records.put({mode:'local'},['sync',account]);
+        await tx.done;
+      }catch(error){tx.abort();await tx.done.catch(()=>{});throw error;}
+    },
     async syncState():Promise<SyncState|undefined>{return (await database).get('workspace',['sync',account]);},
     async setSyncState(value:SyncState|undefined){const db=await database;if(value)await db.put('workspace',value,['sync',account]);else await db.delete('workspace',['sync',account]);},
     async backupBeforeSync(value:Workspace|undefined){if(value)await (await database).put('workspace',value,['before-cloud-sync',account]);},

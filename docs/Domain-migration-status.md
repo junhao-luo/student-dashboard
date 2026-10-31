@@ -1,0 +1,14 @@
+# CourseDock domain migration — 2026-10-31
+
+User requires preservation of existing browser notes, resources and uploaded files. The earlier “start fresh” answer was corrected. Do not switch production authentication or retire the old origin before a tested transfer and backup are available.
+
+- Target: https://coursedock.app; portfolio stays at eljhon.me.
+- Name.com: apex A 216.198.79.1 and five Clerk CNAME records saved. Vercel reports Valid Configuration.
+- Branch codex/coursedock-domain-migration, commit 8997989, pushed. Root Vite base, CSP for new Clerk host, root rewrites and reminder link prepared. Production main unchanged.
+- Vercel preview Ewj19T8G9NtKabATJcDqTL25TLEi Ready. Hero renders at root; authentication not verified.
+- Local build, frontend checks, 28 server tests and server types pass. Tests require TEMP/TMP inside workspace to avoid sandbox temporary-file ENOENT. Separate network-enabled npm audit found zero vulnerabilities.
+- Clerk primary domain still eljhon.me. Change-domain confirmation was opened but not submitted. Switching invalidates all sessions and requires new publishable key, Convex AUTH_JWT_ISSUER, OAuth callbacks and coordinated deployment.
+- Resend signed in. coursedock.app added, ID c6a3cc4b-7fac-4f60-9300-15b23e1974fb, Tokyo. DNS verification pending: TXT resend._domainkey (public key in Resend UI), CNAME rsend to rsend-apne1.forge.rmta.net, CNAME send to send.forge.rmta.net. Receiving disabled.
+- support@coursedock.app mailbox not configured; user will set it up later. Existing support destination and sender remain active until replacements verified.
+
+Next: implement bounded ZIP restore using existing export manifest, records and original attachments; validate archive sizes/relationships and import atomically into the authenticated account. Publish transfer support at the old origin and export before Clerk switch. Keep originals and backup. Then finish Resend DNS, coordinated auth/domain deployment, live login and data verification. Do not expose private data in logs or commits.

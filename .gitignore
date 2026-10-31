@@ -18,6 +18,7 @@ Thumbs.db
 
 # Browser sessions, recordings, and private test artifacts.
 .playwright-cli/
+.tools/
 .playwright/
 playwright-report/
 test-results/
