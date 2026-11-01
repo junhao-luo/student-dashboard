@@ -43,6 +43,7 @@ import "@fontsource-variable/geist";
 import "./redesign.css";
 import "./productivity.css";
 import "./interface.css";
+import "./consent.css";
 import { loadLegacyPreferences, loadInterfacePreferences, saveInterfacePreferences, type Workspace } from "./storage";
 import {useWorkspaceStorage,LegacyImport} from './LocalWorkspace';
 import {useAcademicSyncNotice} from './AcademicSync';
