@@ -16,4 +16,6 @@ label.consent-row a{display:inline;width:auto;margin:0;padding:0;font:inherit;co
 .cookie-preferences .cookie-actions button{flex:1;min-width:0;min-height:40px;padding:8px 12px;margin:0;font-size:13px;font-weight:500;line-height:20px;border:1px solid var(--border,#d9dfdf);border-radius:8px;background:var(--surface,#fff);color:var(--text);box-shadow:none;white-space:normal}
 .cookie-preferences .cookie-actions button:hover{background:var(--bg,#f2f5f4)}
 .cookie-preferences button.cookie-trigger{min-height:36px;margin:0;padding:6px 12px;font-size:12px;line-height:20px;font-weight:400;border-radius:8px;box-shadow:none;background:var(--surface,#fff);color:var(--text)}
+body:has(.bug-fab) .cookie-preferences{bottom:104px}
+body:has(.bug-fab) .cookie-notice{max-height:calc(100dvh - 136px)}
 @media(max-width:480px){.cookie-preferences{inset:auto 12px 12px 12px;max-width:none}.cookie-preferences .cookie-notice{padding:16px}.cookie-actions{flex-wrap:wrap}.cookie-preferences .cookie-actions button{flex-basis:120px}.consent-panel{margin-block:32px}}
