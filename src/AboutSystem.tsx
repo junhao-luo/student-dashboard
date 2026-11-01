@@ -1,6 +1,10 @@
 export function AboutSystem({zh}:{zh:boolean}){
  const t=(en:string,cn:string)=>zh?cn:en;
- const updates=[{date:'2026-10-13',changes:[
+ const updates=[{date:'2026-11-01',changes:[
+  t('CourseDock now runs at coursedock.app, with an account-preserving domain migration and local workspace ZIP transfer.','CourseDock 已移至 coursedock.app，保留原帳號資料並支援本機工作區 ZIP 移轉。'),
+  t('First-visit cookie choices, optional Google Calendar loading, and recorded terms acceptance for the 18+ beta.','首次造訪 Cookie 選擇、選用 Google 行事曆載入，以及 18 歲以上 Beta 的條款同意紀錄。'),
+  t('Compact consent controls and cookie preferences positioned above the bug-report button.','精簡同意控制項，Cookie 偏好按鈕置於問題回報按鈕上方，避免遮擋。'),
+ ]},{date:'2026-10-13',changes:[
   t('Semester credit totals and required/elective course types.','學期學分總計與必修／選修課程類型。'),
   t('Assignment tables with three statuses, descriptions, attachments and calendar detail popups.','作業表格支援三種狀態、說明、附件及月曆詳情視窗。'),
   t('Course resource folders, nested subfolders, file moves and local PDF/Office previews.','課程資源資料夾、子資料夾、檔案移動與本機 PDF／Office 預覽。'),
