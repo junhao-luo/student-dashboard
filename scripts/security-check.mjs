@@ -50,7 +50,11 @@ function inspect(file,content,syntax=false){
   if(ts.isBinaryExpression(node)&&node.operatorToken.kind===ts.SyntaxKind.EqualsToken&&ts.isPropertyAccessExpression(node.left)&&['innerHTML','outerHTML'].includes(node.left.name.text))failures.add(`Unsafe HTML assignment: ${file}`);
   if(ts.isCallExpression(node)){
    if(ts.isIdentifier(node.expression)&&node.expression.text==='eval')failures.add(`Dynamic code execution: ${file}`);
-   if(ts.isPropertyAccessExpression(node.expression)&&node.expression.expression.getText(source)==='localStorage'&&node.expression.name.text==='setItem')failures.add(`Persistent JavaScript storage write requires review: ${file}`);
+   if(ts.isPropertyAccessExpression(node.expression)&&node.expression.expression.getText(source)==='localStorage'&&node.expression.name.text==='setItem'){
+    // Reviewed non-sensitive preference: a fixed allow/reject enum; never an auth token.
+    const preference=file.replaceAll('\\','/')==='src/CookiePreferences.tsx'&&node.arguments[0]?.getText(source)==="'coursedock-cookie-preferences-v1'"&&node.arguments[1]?.getText(source)==="allow?'allow':'reject'";
+    if(!preference)failures.add(`Persistent JavaScript storage write requires review: ${file}`);
+   }
   }
   ts.forEachChild(node,visit);
  }

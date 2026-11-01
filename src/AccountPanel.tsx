@@ -13,6 +13,8 @@ import {LocalWorkspaceProvider,LegacyImport} from './LocalWorkspace';
 
 import {StudentProfileForm} from './StudentProfileForm';
 import {TransferSource} from './TransferSource';
+import {TermsAcceptance,SignUpConsent} from './TermsAcceptance';
+import {CookiePreferences} from './CookiePreferences';
 import {appPath,routerPath,isAccountPath,routerBase} from './app-routes';
 import {normalizeStudentProfile,type StudentProfile as Profile,type StudentProfileInput} from './student-profile';
 
@@ -28,7 +30,7 @@ const accountAppearance=(dark:boolean)=>({variables:{colorPrimary:dark?'#a9d5ca'
 
 export default function AccountBoundary(props:{zh:boolean;dark:boolean;children:ReactNode;onLanguageChange:(lang:'en'|'zh')=>void;onAppearanceChange:(dark:boolean)=>void}){
   if(location.hostname==='eljhon.me'&&appBase==='/student-dashboard/')return <TransferSource/>;
-  return <PreferencesContext.Provider value={props}><BrowserRouter basename={routerBase(appBase)}><Providers {...props}/></BrowserRouter></PreferencesContext.Provider>;
+  return <PreferencesContext.Provider value={props}><BrowserRouter basename={routerBase(appBase)}><Providers {...props}/><CookiePreferences zh={props.zh}/></BrowserRouter></PreferencesContext.Provider>;
 }
 function Providers({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactNode}){
   const navigate=useNavigate();
@@ -49,13 +51,16 @@ function SessionGate({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactN
   if(!isLoaded)return <LoadingState zh={zh}/>;
   if(!user){
     if(pathname==='/')return <AuthPage zh={zh} dark={dark} hero><SignIn key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="hash" signUpUrl={accountPath('/sign-up')} forceRedirectUrl={accountPath('/dashboard')}/></AuthPage>;
-    if(pathname==='/sign-up'||pathname.startsWith('/sign-up/'))return <AuthPage zh={zh} dark={dark} hero><SignUp key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="path" path={accountPath('/sign-up')} signInUrl={accountPath('/')} forceRedirectUrl={accountPath('/onboarding')}/></AuthPage>;
+    if(pathname==='/sign-up'||pathname.startsWith('/sign-up/'))return <AuthPage zh={zh} dark={dark} hero><SignUpConsent zh={zh}><SignUp key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="path" path={accountPath('/sign-up')} signInUrl={accountPath('/')} forceRedirectUrl={accountPath('/onboarding')}/></SignUpConsent></AuthPage>;
     if(pathname==='/sign-in'||pathname.startsWith('/sign-in/'))return <AuthPage zh={zh} dark={dark} hero><SignIn key={zh?'zh':'en'} appearance={accountAppearance(dark)} routing="path" path={accountPath('/sign-in')} signUpUrl={accountPath('/sign-up')} forceRedirectUrl={accountPath('/dashboard')}/></AuthPage>;
     return <Navigate to="/" replace/>;
   }
   if(isLoading)return <LoadingState zh={zh} label={zh?'正在驗證登入…':'Verifying sign-in…'}/>;
   if(!isAuthenticated)return <AuthPage zh={zh} dark={dark}><h1>{zh?'無法連接帳號':'Could not connect your account'}</h1><p role="alert">{zh?'後端尚未確認登入，請檢查連線後重試。':'The backend could not confirm sign-in. Check your connection and retry.'}</p><button onClick={()=>location.reload()}>{zh?'重試':'Retry'}</button><SignOutButton><button>{zh?'登出':'Sign out'}</button></SignOutButton></AuthPage>;
-  return <ProfileGate key={user.id} zh={zh} dark={dark}>{children}</ProfileGate>;
+  return <AuthConsent key={user.id} zh={zh} dark={dark}>{children}</AuthConsent>;
+}
+function AuthConsent({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactNode}){
+ return <><TermsAcceptance zh={zh}><ProfileGate zh={zh} dark={dark}>{children}</ProfileGate></TermsAcceptance><LegalPages zh={zh}/></>;
 }
 function ProfileGate({zh,dark,children}:{zh:boolean;dark:boolean;children:ReactNode}){
   const {user}=useUser();

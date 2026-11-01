@@ -1,3 +1,4 @@
+import {OptionalCalendar} from "./CookiePreferences";
 import { DataExport } from "./DataExport";
 import {AboutSystem} from './AboutSystem';
 import {ContactPage,BugReporter} from './Support';
@@ -811,7 +812,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                 "學校公布的行事曆。個人課表與截止事項仍保留於各自頁面。",
               )}
             </p>
-            <iframe
+            <OptionalCalendar zh={lang==='zh'}><iframe
               title={t(
                 "Feng Chia University school calendar",
                 "逢甲大學學校行事曆",
@@ -819,7 +820,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
               src={`https://calendar.google.com/calendar/embed?src=pun6cvita92hpjvgekbjukbhnk%40group.calendar.google.com&ctz=Asia%2FTaipei&hl=${lang === "zh" ? "zh_TW" : "en"}&mode=AGENDA&showPrint=0&showCalendars=0`}
               referrerPolicy="no-referrer"
               loading="lazy"
-            />
+            /></OptionalCalendar>
             <p className="muted">
               {t(
                 "If the calendar is blank, check your connection. Google must allow this calendar to be viewed publicly.",
@@ -938,7 +939,7 @@ function App({ initial,onPreferences,preferences }: { initial: Workspace | undef
                 <label>{t('Description / notes','說明／筆記')}<textarea name="description" rows={5} maxLength={10000} defaultValue={form==='edit-task'?editingTask?.description??'':''}/></label><p className="muted">{t('After saving, add attachments in the deadline details.','儲存後可在期限詳情中新增附件。')}</p>
                 <label className="reminder-option"><input name="reminder" type="checkbox" defaultChecked={form==='edit-task'&&editingTask?.reminderDays!==null}/>{t('Email a reminder to my school email','寄送提醒至我的學校信箱')}</label>
                 <label>{t('Days before the deadline','截止前幾天')}<input name="reminderDays" type="number" min={0} max={365} step={1} defaultValue={form==='edit-task'?editingTask?.reminderDays??1:1}/></label>
-                <p className="muted">{t('Opt in to receive email from reminder@coursedock.app. Default: 1 day before; 0 means at the deadline. Save and sync this task to schedule it. Completing, deleting or disabling it cancels pending mail after syncing. Beta delivery is best effort and subject to send limits.','勾選後，會收到 reminder@coursedock.app 寄出的郵件。預設提前 1 天；0 表示截止時間。儲存並同步後才會排程；完成、刪除或關閉提醒後，須同步才能取消待寄郵件。Beta 提醒可能延遲或因寄送上限而無法送達。')}</p>
+                <p className="muted">{t('Opt in to receive email from reminder@eljhon.me. Default: 1 day before; 0 means at the deadline. Save and sync this task to schedule it. Completing, deleting or disabling it cancels pending mail after syncing. Beta delivery is best effort and subject to send limits.','勾選後，會收到 reminder@eljhon.me 寄出的郵件。預設提前 1 天；0 表示截止時間。儲存並同步後才會排程；完成、刪除或關閉提醒後，須同步才能取消待寄郵件。Beta 提醒可能延遲或因寄送上限而無法送達。')}</p>
               </>
             )}
             {(form === "meeting" || form === "edit-meeting") && (
