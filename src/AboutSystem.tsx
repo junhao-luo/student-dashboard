@@ -1,6 +1,7 @@
 export function AboutSystem({zh}:{zh:boolean}){
  const t=(en:string,cn:string)=>zh?cn:en;
  const updates=[{date:'2026-11-01',changes:[
+  t('Student profiles now separate year/study status and class section, with extended-study, postgraduate, no-section and custom options.','學生資料改用年級／就學狀態與分班下拉選單，支援延修、研究生、無分班及自訂選項。'),
   t('CourseDock now runs at coursedock.app, with an account-preserving domain migration and local workspace ZIP transfer.','CourseDock 已移至 coursedock.app，保留原帳號資料並支援本機工作區 ZIP 移轉。'),
   t('First-visit cookie choices, optional Google Calendar loading, and recorded terms acceptance for the 18+ beta.','首次造訪 Cookie 選擇、選用 Google 行事曆載入，以及 18 歲以上 Beta 的條款同意紀錄。'),
   t('Compact consent controls and cookie preferences positioned above the bug-report button.','精簡同意控制項，Cookie 偏好按鈕置於問題回報按鈕上方，避免遮擋。'),

@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {Select} from './Interface';
+import {ClassFields} from './ClassFields';
 import {fcuPrograms} from './fcu-programs';
 import {normalizeStudentProfile,type StudentProfile,type StudentProfileInput} from './student-profile';
 
@@ -29,7 +30,7 @@ export function StudentProfileForm({zh,profile,onSave}:{zh:boolean;profile:Stude
         <label>{zh?'系所 / 學程':'Department / program'}<Select aria-label={zh?'系所 / 學程':'Department / program'} aria-required="true" name="department" value={department} onChange={e=>setDepartment(e.target.value)} search={{label:zh?'搜尋系所或學程':'Search departments or programs',placeholder:zh?'輸入名稱關鍵字':'Search by the official Chinese name',empty:zh?'找不到符合的學程，可新增自訂學程。':'No matching program. You can add a custom program.',alwaysVisible:[CUSTOM]}}><option value="" disabled>{zh?'選擇系所或學程':'Choose a department or program'}</option>{programs.map(name=><option key={name} value={name}>{name}</option>)}<option value={CUSTOM}>{zh?'新增自訂學程':'Add custom program'}</option></Select></label>
         {department===CUSTOM&&<label>{zh?'自行輸入系所 / 學程':'Custom department / program'}<input name="customDepartment" required maxLength={120} defaultValue={profile&&!programs.includes(profile.department)?profile.department:''} autoComplete="off"/></label>}
       </div>
-      <label>{zh?'班級':'Class'}<input name="className" defaultValue={profile?.className??''} required maxLength={120} autoComplete="off"/></label>
+      <ClassFields value={profile?.className??''} zh={zh}/>
       <div className="profile-field"><label>{zh?'手機號碼':'Mobile number'}<input name="phone" defaultValue={profile?.phone??''} type="tel" inputMode="tel" required maxLength={13} pattern="(09[0-9]{8}|\+8869[0-9]{8})" placeholder="0912345678" autoComplete="tel" aria-describedby="phone-hint" title={zh?'09 開頭的 10 位數，或 +8869 開頭的 13 個字元，不含空格或連字號。':'10 digits starting with 09, or +886 followed by 9 digits. No spaces or hyphens.'}/></label><small id="phone-hint" className="muted">{zh?'09xxxxxxxx 或 +8869xxxxxxxx，不含空格或連字號。':'09xxxxxxxx or +8869xxxxxxxx, without spaces or hyphens.'}</small></div>
     </fieldset>
     {error&&<p className="error" role="alert">{error}</p>}{saved&&<p role="status">{zh?'學生資料已儲存至帳號。':'Student profile saved to your account.'}</p>}
